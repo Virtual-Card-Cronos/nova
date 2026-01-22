@@ -5,7 +5,8 @@
  */
 
 import { readContract } from "thirdweb"
-import  { policyContract } from "@/app/contract"
+import { getPolicyContract } from "@/app/contract"
+
 // Policy check result
 export interface PolicyCheck {
   agent: string
@@ -18,7 +19,7 @@ export interface PolicyCheck {
  * Checks if an agent can spend the specified amount
  */
 export async function checkPolicy(agent: string, amount: bigint): Promise<PolicyCheck> {
-  const contractAddress = process.env.POLICY_CONTRACT_ADDRESS
+  const contractAddress = process.env.POLICY_CONTRACT_ADDRESS || process.env.NEXT_PUBLIC_POLICY_CONTRACT_ADDRESS
   
   if (!contractAddress) {
     console.warn('POLICY_CONTRACT_ADDRESS not set, allowing by default for demo')
@@ -30,9 +31,20 @@ export async function checkPolicy(agent: string, amount: bigint): Promise<Policy
     }
   }
 
+  const contract = getPolicyContract()
+  if (!contract) {
+    console.warn('Policy contract not available, allowing by default for demo')
+    return {
+      agent,
+      amount,
+      approved: true,
+      timestamp: Date.now(),
+    }
+  }
+
   try {
     const approved = await readContract({
-      contract: policyContract,
+      contract,
       method: "checkPolicy",
       params: [agent as `0x${string}`, amount],
     })
@@ -59,15 +71,20 @@ export async function checkPolicy(agent: string, amount: bigint): Promise<Policy
  * Gets the current spending limit for an agent
  */
 export async function getSpendingLimit(agent: string): Promise<bigint> {
-  const contractAddress = process.env.POLICY_CONTRACT_ADDRESS
+  const contractAddress = process.env.POLICY_CONTRACT_ADDRESS || process.env.NEXT_PUBLIC_POLICY_CONTRACT_ADDRESS
   
   if (!contractAddress) {
     return BigInt(1000000000) // 1000 USDC default for demo
   }
 
+  const contract = getPolicyContract()
+  if (!contract) {
+    return BigInt(1000000000) // 1000 USDC default for demo
+  }
+
   try {
     const limit = await readContract({
-      contract: policyContract,
+      contract,
       method: "getSpendingLimit",
       params: [agent as `0x${string}`],
     })

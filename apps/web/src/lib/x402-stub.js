@@ -2,13 +2,16 @@
 // We use @crypto.com/facilitator-client instead
 // This prevents thirdweb from pulling in broken x402 dependencies
 
-module.exports = {
-  default: {},
-  useFetchWithPayment: () => ({}),
-  PaymentErrorModal: () => null,
-  wrapFetchWithPayment: (fetch) => fetch,
-  // Export everything to satisfy any import pattern
-  ...Object.fromEntries(
-    ['useFetchWithPayment', 'PaymentErrorModal', 'wrapFetchWithPayment'].map(key => [key, () => {}])
-  )
-}
+// Use ESM exports to match thirdweb's module format
+export const useFetchWithPayment = () => ({
+  fetchWithPayment: async () => ({}),
+  isPending: false,
+  error: null,
+  data: null,
+});
+
+export const PaymentErrorModal = () => null;
+
+export const wrapFetchWithPayment = (fetch) => fetch;
+
+export default {};
