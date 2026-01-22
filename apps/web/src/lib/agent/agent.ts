@@ -14,7 +14,8 @@ let cryptoAISDK: { apiKey: string; baseURL: string; provider: AIProvider } | nul
  */
 export async function initializeCryptoAI() {
   // Determine provider: Gemini or OpenAI
-  const geminiKey = process.env.GEMINI_API_KEY
+  // Gemini API uses GOOGLE_API_KEY (but we also support GEMINI_API_KEY for convenience)
+  const geminiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY
   const openAIKey = process.env.OPENAI_API_KEY
   const aiProviderEnv = process.env.AI_PROVIDER?.toLowerCase()
   const provider = (aiProviderEnv as AIProvider) || (geminiKey ? 'gemini' : 'openai')
@@ -32,7 +33,9 @@ export async function initializeCryptoAI() {
 
   console.log('[Agent] Initializing AI SDK...')
   console.log('[Agent] AI_PROVIDER env:', aiProviderEnv || '(not set)')
-  console.log('[Agent] GEMINI_API_KEY present:', !!geminiKey, geminiKey ? `${geminiKey.substring(0, 8)}...` : '(not set)')
+  console.log('[Agent] GOOGLE_API_KEY present:', !!process.env.GOOGLE_API_KEY, process.env.GOOGLE_API_KEY ? `${process.env.GOOGLE_API_KEY.substring(0, 8)}...` : '(not set)')
+  console.log('[Agent] GEMINI_API_KEY present:', !!process.env.GEMINI_API_KEY, process.env.GEMINI_API_KEY ? `${process.env.GEMINI_API_KEY.substring(0, 8)}...` : '(not set)')
+  console.log('[Agent] Combined geminiKey present:', !!geminiKey, geminiKey ? `${geminiKey.substring(0, 8)}...` : '(not set)')
   console.log('[Agent] OPENAI_API_KEY present:', !!openAIKey, openAIKey ? `${openAIKey.substring(0, 8)}...` : '(not set)')
   console.log('[Agent] Selected Provider:', provider.toUpperCase())
   console.log('[Agent] Selected API Key present:', !!apiKey)
@@ -40,7 +43,7 @@ export async function initializeCryptoAI() {
 
   if (!apiKey) {
     console.warn('[Agent] ❌ No AI API key found. Using fallback implementation.')
-    console.warn('[Agent] Set GEMINI_API_KEY or OPENAI_API_KEY environment variable.')
+    console.warn('[Agent] Set GOOGLE_API_KEY (or GEMINI_API_KEY) or OPENAI_API_KEY environment variable.')
     return null
   }
 
@@ -246,7 +249,7 @@ export async function processWithAgent(
     }
 
     const data = await response.json()
-    console.log('[Agent] ✅ API Response received:', JSON.stringify(data, null, 2).substring(0, 500))
+    console.log('[Agent] ✅ API Response received:', JSON.stringify(data, null, 2).substring(0, 1000))
     
     // Parse response based on provider
     let aiMessage: any
@@ -258,17 +261,28 @@ export async function processWithAgent(
         throw new Error('No response from AI')
       }
       
-      const content = candidate.content.parts?.[0]?.text || ''
-      const functionCalls = candidate.content.parts
-        ?.filter((part: any) => part.functionCall)
-        .map((part: any) => ({
-          id: `call_${Date.now()}_${Math.random()}`,
+      console.log('[Agent] 🔍 Gemini candidate content parts:', JSON.stringify(candidate.content.parts, null, 2))
+      
+      // Extract text content and function calls from all parts
+      const textParts = candidate.content.parts?.filter((part: any) => part.text) || []
+      const functionCallParts = candidate.content.parts?.filter((part: any) => part.functionCall) || []
+      
+      const content = textParts.map((p: any) => p.text).join(' ') || ''
+      const functionCalls = functionCallParts.map((part: any, idx: number) => {
+        const funcCall = part.functionCall
+        console.log('[Agent] 🔧 Found function call:', funcCall.name, funcCall.args)
+        return {
+          id: `call_${Date.now()}_${idx}`,
           type: 'function',
           function: {
-            name: part.functionCall.name,
-            arguments: JSON.stringify(part.functionCall.args || {}),
+            name: funcCall.name,
+            arguments: JSON.stringify(funcCall.args || {}),
           },
-        })) || []
+        }
+      })
+
+      console.log('[Agent] 📝 Extracted content:', content.substring(0, 100))
+      console.log('[Agent] 🔧 Extracted function calls:', functionCalls.length)
 
       aiMessage = {
         role: 'assistant',
@@ -287,6 +301,9 @@ export async function processWithAgent(
 
     console.log('[Agent] 📝 AI Message:', aiMessage.content?.substring(0, 100))
     console.log('[Agent] 🔧 Tool calls:', aiMessage.tool_calls?.length || 0)
+    if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {
+      console.log('[Agent] 🔧 Tool call details:', JSON.stringify(aiMessage.tool_calls, null, 2))
+    }
 
     // Handle function calls
     if (aiMessage.tool_calls && aiMessage.tool_calls.length > 0) {

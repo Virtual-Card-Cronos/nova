@@ -16,12 +16,14 @@ const GIFTUP_API_KEY = process.env.GIFTUP_API_KEY || ''
  * Uses GET /items from Gift Up! API
  */
 export async function findCard(brand: string): Promise<GiftUpItem | null> {
+  console.log('[GiftUp] 🔍 Searching for card:', brand)
   try {
     if (!GIFTUP_API_KEY) {
-      console.warn('GIFTUP_API_KEY not set, using mock data')
+      console.warn('[GiftUp] ⚠️ GIFTUP_API_KEY not set, using mock data')
       return getMockItem(brand)
     }
 
+    console.log('[GiftUp] 📡 Calling Gift Up! API: GET /items')
     const response = await fetch(`${GIFTUP_API_BASE}/items`, {
       method: 'GET',
       headers: {
@@ -30,11 +32,16 @@ export async function findCard(brand: string): Promise<GiftUpItem | null> {
       },
     })
 
+    console.log('[GiftUp] 📥 Response status:', response.status, response.statusText)
+
     if (!response.ok) {
+      const errorText = await response.text()
+      console.error('[GiftUp] ❌ API error:', response.status, errorText)
       throw new Error(`Gift Up! API error: ${response.statusText}`)
     }
 
     const items: GiftUpItem[] = await response.json()
+    console.log('[GiftUp] ✅ Received', items.length, 'items from API')
 
     // Search for matching brand (case-insensitive)
     const brandLower = brand.toLowerCase()
@@ -45,10 +52,17 @@ export async function findCard(brand: string): Promise<GiftUpItem | null> {
           item.description?.toLowerCase().includes(brandLower))
     )
 
+    if (matchingItem) {
+      console.log('[GiftUp] ✅ Found matching item:', matchingItem.name, `$${(matchingItem.price / 100).toFixed(2)}`)
+    } else {
+      console.log('[GiftUp] ❌ No matching item found for:', brand)
+    }
+
     return matchingItem || null
   } catch (error) {
-    console.error('Error finding card:', error)
+    console.error('[GiftUp] ❌ Error finding card:', error)
     // Fallback to mock for demo
+    console.log('[GiftUp] 🔄 Falling back to mock data')
     return getMockItem(brand)
   }
 }
@@ -136,12 +150,16 @@ export async function getGiftCardByCode(code: string): Promise<GiftUpGiftCard | 
  * Uses GET /items from Gift Up! API
  */
 export async function listAllItems(): Promise<GiftUpItem[]> {
+  console.log('[GiftUp] 📋 Listing all items')
   try {
     if (!GIFTUP_API_KEY) {
-      console.warn('GIFTUP_API_KEY not set, using mock data')
-      return getMockItems()
+      console.warn('[GiftUp] ⚠️ GIFTUP_API_KEY not set, using mock data')
+      const mockItems = getMockItems()
+      console.log('[GiftUp] 📦 Returning', mockItems.length, 'mock items')
+      return mockItems
     }
 
+    console.log('[GiftUp] 📡 Calling Gift Up! API: GET /items')
     const response = await fetch(`${GIFTUP_API_BASE}/items`, {
       method: 'GET',
       headers: {
@@ -150,14 +168,28 @@ export async function listAllItems(): Promise<GiftUpItem[]> {
       },
     })
 
+    console.log('[GiftUp] 📥 Response status:', response.status, response.statusText)
+
     if (!response.ok) {
+      const errorText = await response.text()
+      console.error('[GiftUp] ❌ API error:', response.status, errorText)
       throw new Error(`Gift Up! API error: ${response.statusText}`)
     }
 
-    return await response.json()
+    const items: GiftUpItem[] = await response.json()
+    const activeItems = items.filter(item => item.isActive)
+    console.log('[GiftUp] ✅ Received', items.length, 'total items,', activeItems.length, 'active items')
+    
+    // Log first few items for debugging
+    if (activeItems.length > 0) {
+      console.log('[GiftUp] 📦 Sample items:', activeItems.slice(0, 3).map(item => `${item.name} ($${(item.price / 100).toFixed(2)})`).join(', '))
+    }
+
+    return activeItems
   } catch (error) {
-    console.error('Error listing items:', error)
+    console.error('[GiftUp] ❌ Error listing items:', error)
     // Fallback to mock for demo
+    console.log('[GiftUp] 🔄 Falling back to mock data')
     return getMockItems()
   }
 }
