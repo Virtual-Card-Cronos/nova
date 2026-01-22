@@ -1,0 +1,32 @@
+{
+  "name": "novaagent-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@crypto.com/facilitator-client": "^1.0.4",
+    "ethers": "^6.16.0",
+    "framer-motion": "^11",
+    "lucide-react": "^0.469.0",
+    "next": "16.1.4",
+    "react": "^19",
+    "react-dom": "^19",
+    "thirdweb": "5.117.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.4",
+    "postcss": "^8",
+    "tailwindcss": "^3",
+    "typescript": "^5"
+  }
+}

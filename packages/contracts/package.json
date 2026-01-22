@@ -1,0 +1,14 @@
+{
+  "name": "@novaagent/contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts for NovaAgent - Aegis Pattern Policy Engine",
+  "scripts": {
+    "build": "forge build",
+    "test": "forge test",
+    "deploy": "forge script script/Deploy.s.sol",
+    "verify": "forge verify-contract"
+  },
+  "devDependencies": {
+    "@openzeppelin/contracts": "^5.0.0"
+  }
+}

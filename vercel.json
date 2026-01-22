@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "buildCommand": "npm install && npm run build --workspace=apps/web",
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "rootDirectory": "apps/web",
+  "env": {
+    "NEXT_PUBLIC_CRONOS_RPC": "@cronos-rpc",
+    "NEXT_PUBLIC_CRONOS_NETWORK": "@cronos-network",
+    "NEXT_PUBLIC_USDC_CONTRACT": "@usdc-contract",
+    "POLICY_CONTRACT_ADDRESS": "@policy-contract",
+    "NEXT_PUBLIC_FACILITATOR_BASE_URL": "@facilitator-base-url",
+    "GIFTUP_API_KEY": "@giftup-api-key",
+    "CRYPTO_AI_API_KEY": "@crypto-ai-api-key",
+    "CRYPTO_AI_BASE_URL": "@crypto-ai-base-url",
+    "CRYPTO_AI_MODEL": "@crypto-ai-model",
+    "OPENAI_API_KEY": "@openai-api-key",
+    "NEXT_PUBLIC_THIRDWEB_CLIENT_ID": "@thirdweb-client-id"
+  }
+}

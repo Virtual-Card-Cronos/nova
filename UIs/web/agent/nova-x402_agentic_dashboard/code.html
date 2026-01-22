@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nova-x402 Agentic Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0051ff",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#0a0b0d",
+                        "cronos-card": "#161b26",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(22, 27, 38, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .agent-gradient {
+            background: linear-gradient(135deg, #0051ff 0%, #002b85 100%);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+</div>
+<h2 class="text-xl font-extrabold tracking-tight">Nova-x402</h2>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+<a class="text-white" href="#">Dashboard</a>
+<a class="hover:text-white transition-colors" href="#">History</a>
+<a class="hover:text-white transition-colors" href="#">Tillo Index</a>
+</nav>
+<div class="flex items-center gap-4 border-l border-white/10 pl-6">
+<div class="flex flex-col items-end mr-2">
+<span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Network</span>
+<span class="text-xs font-bold text-emerald-500 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Cronos Mainnet
+                        </span>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
+                        Connect Wallet
+                    </button>
+<div class="w-10 h-10 rounded-full border-2 border-primary/30 p-0.5">
+<div class="w-full h-full rounded-full bg-cover bg-center" data-alt="User profile avatar placeholder" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDcOV_Zv3kRkodPHcW3dJzgyKx2YWMufZKE5A7CilE4-JmzSVnd-RE_ofrIUVRw-RcgtRv0xT2CUoYd8UoO66BmU1skLLmQt4idMOL3qXyA8hOJ2Uku8t0zkY9_LQ94Qa2XzrRICRjje2HHZmpkYOj0GmEiDuHZrQh_n0rpwcJ2TEcsVlpyqo1rhtTMCubtZXZLzgQK56WfmTVENAteDC0ZVd0ktmOGSvS6zXmc-3Rmhs7vbIVpsn3g_SEboYnfathSQOkE22VvGRN8')"></div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-6 py-10">
+<!-- Hero Section: Agentic Chat Interface -->
+<section class="max-w-[800px] mx-auto mb-16">
+<div class="text-center mb-10">
+<h1 class="text-white tracking-tight text-4xl md:text-5xl font-extrabold mb-4">
+                    Web3 Gift Card <span class="text-primary">Concierge</span>
+</h1>
+<p class="text-slate-400 text-lg max-w-xl mx-auto">
+                    Search global inventory across Tillo and settle instantly on Cronos EVM with Nova-x402.
+                </p>
+</div>
+<!-- Chat Container -->
+<div class="glass-card rounded-2xl overflow-hidden shadow-2xl border-primary/20">
+<div class="bg-primary/10 px-6 py-3 border-b border-white/10 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold uppercase tracking-widest text-primary">Nova-x402 Active</span>
+</div>
+<span class="text-[11px] font-mono text-slate-500">Session: 0x82...a402</span>
+</div>
+<div class="p-6 space-y-6 min-h-[400px] flex flex-col justify-end">
+<!-- Message 1: User -->
+<div class="flex justify-end">
+<div class="max-w-[70%]">
+<div class="bg-primary text-white px-5 py-3 rounded-2xl rounded-tr-none shadow-lg">
+<p class="text-sm">I need a Steam gift card for roughly $20. Best price available please.</p>
+</div>
+<p class="text-[11px] text-slate-500 mt-1 text-right">Sent 2m ago</p>
+</div>
+</div>
+<!-- Message 2: Agent -->
+<div class="flex gap-4 items-end">
+<div class="w-10 h-10 rounded-full agent-gradient flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-[20px]">smart_toy</span>
+</div>
+<div class="flex flex-col gap-1 items-start max-w-[70%]">
+<p class="text-primary text-[12px] font-bold tracking-wide uppercase">Nova-x402 Agent</p>
+<div class="text-sm font-medium leading-relaxed rounded-2xl rounded-tl-none px-5 py-4 bg-cronos-card border border-white/5 text-slate-200">
+                                Searching Tillo inventory for Steam cards... <br/><br/>
+                                Found a <span class="text-white font-bold">$20.00 Steam Card</span> (Digital Code). <br/>
+                                Settlement amount: <span class="text-primary font-bold">142.50 CRO</span> + Gas.
+                                <div class="mt-4 p-3 bg-black/40 rounded-lg border border-primary/20 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#171a21] flex items-center justify-center" data-alt="Steam logo placeholder" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDKxiTfnyQv8Vno6UP9Lay6oDxPFEZPcEL-sOzfgyXwqcBgLZSSt5pFlBIxtzhGFId7_y6tRB2JPLo8RXj-bGLq2TWuMQ8TA6hhtfkmOe1BVcy1SDyTyXk3t1-KqYIOobGkiKfCZ748t1BYi56PlTmymX52GQ6WgrwzFtjmLa-HWF-htdvTsFQzCms4ZPIh82Dk8b_zPwpTSkYjqODQocy-RejzV7MNxqD7V-uMwLFgeVUQZ9t_eWxyua946LqFnaYh_GgPs_0e_Ig3')"></div>
+<div>
+<p class="text-xs font-bold">Steam Wallet Card</p>
+<p class="text-[10px] text-slate-400">Merchant: Tillo Global</p>
+</div>
+</div>
+<span class="text-white font-bold">$20.00</span>
+</div>
+<p class="mt-4">Would you like to authorize this x402 settlement on Cronos?</p>
+</div>
+</div>
+</div>
+<!-- Authorization CTA -->
+<div class="flex justify-center pt-4">
+<div class="flex gap-3 w-full max-w-[400px]">
+<button class="flex-1 bg-primary hover:bg-primary/90 text-white h-12 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-[20px]">verified_user</span>
+                                Authorize Settlement
+                            </button>
+<button class="px-6 bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white h-12 rounded-xl font-bold transition-all border border-white/10">
+                                Cancel
+                            </button>
+</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-4 bg-black/30 border-t border-white/10">
+<div class="relative">
+<input class="w-full bg-cronos-card/50 border-white/10 rounded-xl py-4 pl-5 pr-14 text-sm text-white focus:ring-primary focus:border-primary placeholder:text-slate-500 transition-all" placeholder="Reply to Nova-x402..." type="text"/>
+<button class="absolute right-2 top-2 bottom-2 aspect-square bg-primary/20 hover:bg-primary/30 text-primary rounded-lg flex items-center justify-center transition-all">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Suggested Brands Grid -->
+<section>
+<div class="flex items-center justify-between px-4 mb-6">
+<h2 class="text-white text-2xl font-bold tracking-tight">Suggested for You</h2>
+<button class="text-primary text-sm font-bold flex items-center gap-1 hover:underline">
+                    View All Inventory <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Steam Card -->
+<div class="glass-card group hover:border-primary/50 transition-all rounded-2xl p-6 cursor-pointer overflow-hidden relative">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
+<div class="flex flex-col h-full">
+<div class="w-14 h-14 bg-[#171a21] rounded-xl flex items-center justify-center mb-6 shadow-xl border border-white/10">
+<span class="material-symbols-outlined text-white text-[32px]">sports_esports</span>
+</div>
+<h3 class="text-xl font-bold mb-2">Steam</h3>
+<p class="text-slate-400 text-sm mb-6 flex-grow leading-relaxed">Instantly top up your Steam Wallet with zero fees using CRO or USDC.</p>
+<div class="flex items-center justify-between pt-4 border-t border-white/10">
+<span class="text-primary font-bold text-sm">Buy with CRO</span>
+<span class="bg-primary/10 text-primary text-[10px] font-bold uppercase px-2 py-1 rounded">5% Cashback</span>
+</div>
+</div>
+</div>
+<!-- Amazon Card -->
+<div class="glass-card group hover:border-primary/50 transition-all rounded-2xl p-6 cursor-pointer overflow-hidden relative">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-all"></div>
+<div class="flex flex-col h-full">
+<div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center mb-6 shadow-xl border border-white/10">
+<img class="w-8 h-8" data-alt="Amazon logo brand asset" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy4tr0_pXrKp7VKUFuEueJRWyOWKcOL0FOrmasjCuv5f6YD2P8Z3Gg74hFd3x6-U1iYFsoAQs9lRaX71yZU59ZPDPPH7SNHIhKSxi4Na9wZQDU1Ruuv_j05rN7AiJVIR4ufao1_Mcr7U-2bJ8H4u3cv5bNXMEQJyc1aDmM5nkBFDGlBTcHV2o_czFVq4ZClXa8PCN3giyfWCHH1XueCMfuGa6_KvvLhNAfCe50dv4CJvyvt6qM3Nf3e3aR0nKdaXRV5vIeDAJmTpxo"/>
+</div>
+<h3 class="text-xl font-bold mb-2">Amazon</h3>
+<p class="text-slate-400 text-sm mb-6 flex-grow leading-relaxed">Shop millions of items. Redeem instantly for US, UK, and DE stores.</p>
+<div class="flex items-center justify-between pt-4 border-t border-white/10">
+<span class="text-primary font-bold text-sm">Buy with CRO</span>
+<span class="bg-white/5 text-slate-500 text-[10px] font-bold uppercase px-2 py-1 rounded">Popular</span>
+</div>
+</div>
+</div>
+<!-- Uber Card -->
+<div class="glass-card group hover:border-primary/50 transition-all rounded-2xl p-6 cursor-pointer overflow-hidden relative">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-slate-500/10 rounded-full blur-2xl group-hover:bg-slate-500/20 transition-all"></div>
+<div class="flex flex-col h-full">
+<div class="w-14 h-14 bg-black rounded-xl flex items-center justify-center mb-6 shadow-xl border border-white/10">
+<span class="material-symbols-outlined text-white text-[32px]">directions_car</span>
+</div>
+<h3 class="text-xl font-bold mb-2">Uber &amp; Eats</h3>
+<p class="text-slate-400 text-sm mb-6 flex-grow leading-relaxed">Get a ride or order food. Easy settlement via Cronos smart contracts.</p>
+<div class="flex items-center justify-between pt-4 border-t border-white/10">
+<span class="text-primary font-bold text-sm">Buy with CRO</span>
+<span class="bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase px-2 py-1 rounded">Instant</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats / Market Info Footer Area -->
+<footer class="mt-20 pt-10 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-8">
+<div class="flex flex-col gap-1">
+<p class="text-[10px] uppercase font-bold tracking-widest text-slate-500">CRO Price</p>
+<div class="flex items-baseline gap-2">
+<span class="text-xl font-bold text-white">$0.0842</span>
+<span class="text-xs text-emerald-500">+2.4%</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-[10px] uppercase font-bold tracking-widest text-slate-500">Gas Price (Fast)</p>
+<div class="flex items-baseline gap-2">
+<span class="text-xl font-bold text-white">42 Gwei</span>
+<span class="text-xs text-slate-400">~0.12 CRO</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-[10px] uppercase font-bold tracking-widest text-slate-500">Total Settled</p>
+<div class="flex items-baseline gap-2">
+<span class="text-xl font-bold text-white">$4.2M</span>
+<span class="text-xs text-slate-400">Past 30d</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<p class="text-[10px] uppercase font-bold tracking-widest text-slate-500">Agent Status</p>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-xl font-bold text-white uppercase text-sm tracking-wide">Nominal</span>
+</div>
+</div>
+</footer>
+</main>
+<!-- Side Decoration (Ambient Glow) -->
+<div class="fixed top-1/4 -left-64 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="fixed bottom-0 -right-64 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+</body></html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>x402 Authorization Modal - Nova-x402</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#256af4",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-modal {
+            background: rgba(16, 22, 34, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex items-center justify-center p-4">
+<!-- Dashboard Background (Dimmed/Blurred) -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
+<div class="p-8 grid grid-cols-3 gap-6">
+<div class="h-32 bg-primary/10 rounded-xl border border-primary/20"></div>
+<div class="h-32 bg-primary/10 rounded-xl border border-primary/20"></div>
+<div class="h-32 bg-primary/10 rounded-xl border border-primary/20"></div>
+<div class="col-span-2 h-64 bg-primary/10 rounded-xl border border-primary/20"></div>
+<div class="h-64 bg-primary/10 rounded-xl border border-primary/20"></div>
+</div>
+</div>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 bg-black/60 z-10"></div>
+<!-- Modal Container -->
+<div class="relative z-20 w-full max-w-[500px] glass-modal rounded-xl shadow-2xl overflow-hidden">
+<!-- Progress Bar Component -->
+<div class="flex flex-col gap-2 p-6 pb-2">
+<div class="flex gap-6 justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">shield_lock</span>
+<p class="text-white text-sm font-medium leading-normal">Secure Authorization</p>
+</div>
+<p class="text-white text-xs font-normal leading-normal opacity-70">Step 2 of 3</p>
+</div>
+<div class="rounded-full bg-white/10 h-1.5 overflow-hidden">
+<div class="h-full rounded-full bg-primary" style="width: 66%;"></div>
+</div>
+</div>
+<!-- Profile Header Component -->
+<div class="flex p-4 pb-0">
+<div class="flex w-full flex-col gap-4 items-center">
+<div class="flex gap-4 flex-col items-center">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-20 w-20 border-2 border-primary/30 p-1 bg-background-dark" data-alt="Abstract digital agent avatar representing NovaAgent" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBOzMnvnPt9Ehu-D0OWlhqp4K8DVFk5mJgsZTtMQDDqKQtbxKUCT8jQHsfA7G63zD_xCTlFPs6ykaZQJhy_Tt1kgYHssufwK1takcXVylQp1vEcLBPRSUMY3Ss28vCZVr88U_48LPT-oonwLZL0PsjFli8tMHidq57wHnjU1MgNUWYjUVwSQS6piPQoB2nPqrAhWO77mFjbhcREhhc7lhHJU4IyxZLJKSGtl5_fCwJWtc522l-B6vK0agiHgib2BsQP3Xy03JVjBat5");'>
+</div>
+<div class="absolute bottom-0 right-0 bg-green-500 h-4 w-4 rounded-full border-2 border-[#101622]"></div>
+</div>
+<div class="flex flex-col items-center justify-center">
+<p class="text-white text-xl font-bold leading-tight tracking-[-0.015em] text-center">NovaAgent Request</p>
+<div class="flex items-center gap-1.5 mt-1">
+<span class="material-symbols-outlined text-primary text-[14px]">verified</span>
+<p class="text-[#90a4cb] text-sm font-medium leading-normal text-center">Cronos x402 Facilitator</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Headline Text Component (Amount) -->
+<div class="flex flex-col items-center pt-6 px-6">
+<div class="bg-primary/10 px-4 py-2 rounded-full mb-2">
+<h2 class="text-primary tracking-tight text-3xl font-extrabold leading-tight text-center">$20.00 USDC</h2>
+</div>
+</div>
+<!-- Body Text Component -->
+<div class="px-8 pb-4">
+<p class="text-slate-300 text-sm font-normal leading-relaxed text-center">
+                NovaAgent is requesting a <span class="text-white font-semibold">$20.00 USDC</span> authorization to execute your gift card purchase on <span class="text-white font-semibold">Cronos EVM</span>. This allows the facilitator to lock the necessary liquidity for your transaction.
+            </p>
+</div>
+<!-- Transaction Summary Mini-Card -->
+<div class="mx-6 mb-4 p-4 rounded-lg bg-white/5 border border-white/10">
+<div class="flex justify-between text-xs mb-2">
+<span class="text-slate-400">Network Fee</span>
+<span class="text-white">0.42 CRO</span>
+</div>
+<div class="flex justify-between text-xs">
+<span class="text-slate-400">Facilitator Address</span>
+<span class="text-white font-mono">0x402...9E2b</span>
+</div>
+</div>
+<!-- Button Group Component -->
+<div class="flex justify-center border-t border-white/10 bg-white/5">
+<div class="flex flex-1 gap-3 flex-col items-stretch px-6 py-5">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-5 bg-primary hover:bg-primary/90 transition-colors text-white text-base font-bold leading-normal tracking-[0.015em] w-full shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg">touch_app</span>
+<span class="truncate">Authorize &amp; Execute</span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-transparent hover:bg-white/5 transition-colors text-slate-400 hover:text-white text-sm font-medium leading-normal tracking-[0.015em] w-full">
+<span class="truncate">Cancel Transaction</span>
+</button>
+</div>
+</div>
+<!-- Security Footer -->
+<div class="flex justify-center items-center gap-2 pb-4 opacity-50">
+<span class="material-symbols-outlined text-[12px] text-white">lock</span>
+<span class="text-[10px] text-white uppercase tracking-widest font-bold">Encrypted via Cronos Secure Bridge</span>
+</div>
+</div>
+</body></html>

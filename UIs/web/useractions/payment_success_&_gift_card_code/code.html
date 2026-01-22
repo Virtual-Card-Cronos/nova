@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Payment Successful - Web3Card</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#256af4",
+                "background-light": "#f5f6f8",
+                "background-dark": "#101622",
+              },
+              fontFamily: {
+                "display": ["Manrope", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen text-slate-900 dark:text-white transition-colors duration-300">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- TopNavBar Component -->
+<div class="px-4 md:px-40 flex justify-center py-2 border-b border-solid border-slate-200 dark:border-[#222f49] bg-white dark:bg-background-dark/50 backdrop-blur-md sticky top-0 z-50">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap px-4 py-3">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-6">
+<span class="material-symbols-outlined text-3xl">account_balance_wallet</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Web3Card</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<div class="hidden md:flex items-center gap-9">
+<a class="text-slate-600 dark:text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Shop</a>
+<a class="text-slate-600 dark:text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Transactions</a>
+<a class="text-slate-600 dark:text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Wallet</a>
+<a class="text-slate-600 dark:text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Support</a>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/20" data-alt="User avatar placeholder" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBcxtpDgAfHCkQM-Z4D8sYrhStxZsSlV3f9-thoobv97-4KI-9B38eE_agSXpIB-nFC2eyj_p8mzlNdM6pCFFRogoB8ySif0hdkDHbwQEn4g6KDexEQXj6zgawA0TMg8DcfLVbCRuphl5aoXtcD06sdtYsELdM67_qwQ9NNoCCU0xzO1Ae0nLjGXs8Nof6gMo7C-ndFEZTiIgUPgSMTf3krcIUm4oo4kdrtnbT3MrlG-Vzp9vAnKbUs5TvR3scfslp9S7-keRnxAkIt");'></div>
+</div>
+</header>
+</div>
+</div>
+<main class="flex-1 flex justify-center py-10">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<!-- Success Icon & Headline -->
+<div class="flex flex-col items-center justify-center text-center pb-8">
+<div class="bg-emerald-500/10 text-emerald-500 rounded-full p-4 mb-4 ring-8 ring-emerald-500/5">
+<span class="material-symbols-outlined !text-6xl font-bold">check_circle</span>
+</div>
+<!-- HeadlineText Component -->
+<h1 class="text-slate-900 dark:text-white tracking-light text-[32px] md:text-[40px] font-extrabold leading-tight px-4 pb-2">Payment Successful!</h1>
+<!-- MetaText Component -->
+<p class="text-slate-500 dark:text-[#90a4cb] text-base font-normal leading-normal px-4 max-w-lg">Your transaction has been confirmed on the Ethereum network. Your Amazon Gift Card is now available below.</p>
+</div>
+<!-- Gift Card Box (Modified Card Component) -->
+<div class="px-4 pb-8">
+<div class="relative overflow-hidden bg-white dark:bg-[#1a2333] rounded-2xl border border-slate-200 dark:border-white/5 shadow-2xl">
+<div class="absolute top-0 right-0 p-6 opacity-10 dark:opacity-20 pointer-events-none">
+<span class="material-symbols-outlined !text-9xl">shopping_cart</span>
+</div>
+<div class="p-1 sm:p-2">
+<div class="bg-gradient-to-br from-primary via-blue-600 to-indigo-700 flex flex-col items-stretch justify-end rounded-xl min-h-[220px] shadow-inner" data-alt="Amazon gift card background with dark overlay" style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuDLIcxMUlb6fQwwhflShu_Y9KCsAArA43qwD9L7JS_im8jB86IEiQM-yGvwPzdjXHF5h74gbE0hS-Hf7jePiHZiqP6SVfrPag1gstPFLanzVQG_I5WbklHJ2hU2gIx_AOysbCoAoOipYoFnJ1zqcY0YWPl3uCWz9cmMJuq-g74CwzrI0VOsXT2YFXlBDfe3PU40-xB8FLjsS8QBKM42LFZVTqtbZBgrOzIACRkuhNLNNNxcFDTmddQ1gU8y9e2_LWG5TgxnjjEskxUC");'>
+<div class="flex flex-col sm:flex-row w-full items-start sm:items-end justify-between gap-6 p-6 md:p-8">
+<div class="flex max-w-[440px] flex-1 flex-col gap-2">
+<div class="flex items-center gap-2 text-white/80">
+<span class="material-symbols-outlined text-sm">confirmation_number</span>
+<p class="text-xs font-bold uppercase tracking-widest">GIFT CARD CODE</p>
+</div>
+<p class="text-white tracking-wider text-3xl md:text-4xl font-mono font-bold leading-tight">AMZN-ABCD-1234</p>
+<div class="flex items-center gap-3 mt-1">
+<span class="bg-white/20 px-2 py-0.5 rounded text-[10px] font-bold text-white tracking-wide uppercase">Confirmed</span>
+<p class="text-white text-lg font-medium leading-normal">$50.00 Amazon.com Gift Card</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex min-w-[120px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-white text-primary hover:bg-slate-100 transition-all font-bold leading-normal shadow-lg active:scale-95">
+<span class="material-symbols-outlined text-lg">content_copy</span>
+<span class="truncate">Copy Code</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Transaction Metadata Footer -->
+<div class="px-8 py-4 bg-slate-50 dark:bg-black/20 flex flex-wrap justify-between items-center gap-4 text-xs md:text-sm border-t border-slate-200 dark:border-white/5">
+<div class="flex gap-6">
+<div class="flex flex-col">
+<span class="text-slate-400 dark:text-slate-500 uppercase font-bold tracking-tighter">Paid With</span>
+<span class="text-slate-700 dark:text-slate-300 font-medium">0.018 ETH</span>
+</div>
+<div class="flex flex-col">
+<span class="text-slate-400 dark:text-slate-500 uppercase font-bold tracking-tighter">Status</span>
+<span class="text-emerald-500 font-bold flex items-center gap-1"><span class="size-1.5 bg-emerald-500 rounded-full"></span>Success</span>
+</div>
+</div>
+<a class="flex items-center gap-1 text-primary hover:underline font-bold" href="#">
+                                    View on Etherscan
+                                    <span class="material-symbols-outlined !text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Redemption Instructions -->
+<div class="px-4">
+<div class="bg-white dark:bg-[#1a2333] border border-slate-200 dark:border-white/5 rounded-2xl p-6 md:p-8">
+<!-- SectionHeader Component -->
+<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] pb-6 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">info</span>
+                                Redemption Instructions
+                            </h2>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">1</div>
+<div>
+<p class="text-slate-900 dark:text-white font-bold text-base">Go to Amazon.com</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Visit the Amazon website or open the Amazon mobile app and sign in to your account.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">2</div>
+<div>
+<p class="text-slate-900 dark:text-white font-bold text-base">Navigate to Gift Cards</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Select 'Your Account' and then click on 'Gift Cards' or 'Redeem a Gift Card'.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">3</div>
+<div>
+<p class="text-slate-900 dark:text-white font-bold text-base">Enter the Code</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Paste the code <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-primary font-mono">AMZN-ABCD-1234</code> and click 'Apply to Balance'.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Actions -->
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4 py-12 px-4">
+<button class="w-full sm:w-auto flex min-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-6 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-blue-700 transition-colors shadow-lg shadow-primary/25">
+<span class="truncate">Back to Home</span>
+</button>
+<button class="w-full sm:w-auto flex min-w-[200px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl h-12 px-6 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-white text-sm font-bold leading-normal hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="truncate">View Receipt</span>
+</button>
+</div>
+<!-- Help Footer -->
+<div class="text-center pb-10">
+<p class="text-slate-500 dark:text-slate-500 text-sm">
+                            Need help? <a class="text-primary hover:underline font-medium" href="#">Contact our support team</a>
+</p>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

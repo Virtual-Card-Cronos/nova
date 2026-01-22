@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Crypto.com Payment Handoff</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#256af4",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-modal {
+            background: rgba(16, 22, 35, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .spinner-glow {
+            box-shadow: 0 0 15px rgba(37, 106, 244, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-hidden">
+<!-- Mock Background Dashboard (Dimmed) -->
+<div class="relative w-full h-screen overflow-hidden opacity-30 grayscale-[0.5]">
+<!-- TopNavBar Component -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#222f49] px-10 py-3 bg-[#101623]">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-3xl">currency_bitcoin</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Web3 Fintech</h2>
+</div>
+<div class="flex items-center gap-9">
+<a class="text-white text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-white text-sm font-medium leading-normal" href="#">Gift Cards</a>
+<a class="text-white text-sm font-medium leading-normal" href="#">Wallet</a>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBbHBLCWwr3ML2OWPHv1POlRFV83DcSPMtkfXwhEiOIngXUIqjtI3eOh0AsMWu6gWC7R6ve5PqeolyGNH22Hzc1g8azdbi6OGlE0rmZadQUfvZg8ABr5W9nLvd2QqkX-K_CKs6nV2yuchGUlduoRJj_bnMlsgDEJIRhC8XkmJ2apOUSP1Zh83YnN1sdlDQe4Gl9BSTKNUnPoD5zkb5rg8jD7DLrasno2CVQuOkjEOTOHxKk4axjm6-bR0SD5Y9uc8PZw0cxjQdaVjZS");'></div>
+</div>
+</header>
+<div class="flex h-full">
+<!-- SideNavBar Component -->
+<div class="w-64 border-r border-[#222f49] flex flex-col justify-between bg-[#101623] p-4">
+<div class="flex flex-col gap-4">
+<div class="flex gap-3 items-center">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Account profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDnCSCV4X0YcJQLrT3d4jnxR-58r-g_fbIvCgfJES4312lvKHxZx_kTcXw4vehmusDHBZVu-hL0v-DInDVX-uMzK-q6xYRVbaHDbViyjymhEhrdRrL1WJgQrDNmogTijY7HLQvolYdsGi4mIPL_6ZiYw7Nva71HN_KHXsIzWJC2nTfOg54kRIC4wpWi_NDb1m2FzZtbaYzx40RDRQaY_Wovju7XuZ-C3k5Qgfk_xyrfOemxgYZm06ZlVmLEl3VypmS4mDbExdAK7kGk");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-medium leading-normal">Alex Rivera</h1>
+<p class="text-[#90a4cb] text-sm font-normal leading-normal">Verified Account</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 mt-4">
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#222f49]">
+<span class="material-symbols-outlined text-white">grid_view</span>
+<p class="text-white text-sm font-medium leading-normal">Marketplace</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2">
+<span class="material-symbols-outlined text-white">account_balance_wallet</span>
+<p class="text-white text-sm font-medium leading-normal">Wallet</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2">
+<span class="material-symbols-outlined text-white">credit_card</span>
+<p class="text-white text-sm font-medium leading-normal">Cards</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Dashboard Content Mock -->
+<div class="flex-1 p-10 grid grid-cols-3 gap-6">
+<div class="h-40 bg-[#1c2638] rounded-xl border border-[#222f49]"></div>
+<div class="h-40 bg-[#1c2638] rounded-xl border border-[#222f49]"></div>
+<div class="h-40 bg-[#1c2638] rounded-xl border border-[#222f49]"></div>
+<div class="col-span-3 h-80 bg-[#1c2638] rounded-xl border border-[#222f49]"></div>
+</div>
+</div>
+</div>
+<!-- Payment Handoff Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md">
+<!-- Center Glassmorphic Modal -->
+<div class="glass-modal w-full max-w-[520px] rounded-xl p-8 flex flex-col items-center shadow-2xl">
+<!-- Modern Loading Spinner -->
+<div class="relative flex items-center justify-center mb-8">
+<div class="size-20 rounded-full border-4 border-primary/20 animate-spin border-t-primary spinner-glow"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-2xl animate-pulse">lock</span>
+</div>
+</div>
+<!-- HeadlineText Component -->
+<h1 class="text-white tracking-tight text-[28px] font-bold leading-tight text-center pb-2">
+                Initializing secure payment
+            </h1>
+<p class="text-primary/90 text-lg font-semibold mb-6 flex items-center gap-2">
+                via Crypto.com <span class="material-symbols-outlined text-lg">verified</span>
+</p>
+<!-- Order Summary Card -->
+<div class="w-full bg-white/5 rounded-lg p-4 border border-white/10 mb-8">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[#90a4cb] text-sm">Item</span>
+<span class="text-white font-medium">Amazon.com Gift Card</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[#90a4cb] text-sm">Total Amount</span>
+<span class="text-white font-bold text-lg">$50.00 USD</span>
+</div>
+</div>
+<!-- ProgressBar Component -->
+<div class="w-full flex flex-col gap-3 mb-8">
+<div class="flex gap-6 justify-between">
+<p class="text-[#90a4cb] text-sm font-medium leading-normal">Securing connection...</p>
+<p class="text-primary text-sm font-bold">65%</p>
+</div>
+<div class="rounded-full bg-white/10 h-2 overflow-hidden">
+<div class="h-full rounded-full bg-primary" style="width: 65%;"></div>
+</div>
+<p class="text-[#90a4cb] text-xs font-normal leading-normal text-center">
+                    Redirecting to Crypto.com Pay gateway
+                </p>
+</div>
+<!-- BodyText Component -->
+<div class="px-4 text-center mb-8">
+<p class="text-white/70 text-sm font-normal leading-relaxed">
+                    Please do not refresh the page or click "Back". We are preparing your transaction details for a seamless checkout experience.
+                </p>
+</div>
+<!-- Footer Section -->
+<div class="w-full pt-6 border-t border-white/10 flex flex-col items-center gap-4">
+<div class="flex items-center gap-2 opacity-60 grayscale hover:grayscale-0 transition-all duration-300">
+<span class="text-[10px] uppercase tracking-widest text-[#90a4cb] font-bold">Powered by</span>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">bolt</span>
+<span class="text-sm font-bold text-white">Crypto.com</span>
+</div>
+</div>
+<button class="text-[#90a4cb] hover:text-white text-xs font-medium underline underline-offset-4 transition-colors">
+                    Cancel and return to dashboard
+                </button>
+</div>
+</div>
+</div>
+<!-- Security Badges in corner -->
+<div class="fixed bottom-6 right-6 flex items-center gap-4 z-50">
+<div class="flex items-center gap-2 bg-background-dark/80 backdrop-blur px-3 py-1.5 rounded-full border border-white/10">
+<span class="material-symbols-outlined text-green-500 text-sm">shield</span>
+<span class="text-[10px] text-white/80 font-medium uppercase tracking-tighter">256-bit SSL Secure</span>
+</div>
+</div>
+</body></html>

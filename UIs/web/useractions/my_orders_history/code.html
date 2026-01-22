@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Orders History - NovaCard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#256af4",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- TopNavBar Component -->
+<div class="flex flex-1 justify-center border-b border-solid border-[#222f49] bg-background-light dark:bg-background-dark">
+<div class="layout-content-container flex flex-col w-full max-w-[1200px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap px-10 py-3">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_319)">
+<path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z" fill="currentColor"></path>
+</g>
+<defs>
+<clippath id="clip0_6_319"><rect fill="white" height="48" width="48"></rect></clippath>
+</defs>
+</svg>
+</div>
+<h2 class="text-black dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">NovaCard</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Shop</a>
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Portfolio</a>
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Support</a>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+<span class="truncate">0x7a...4d2e</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-slate-700" data-alt="User profile avatar placeholder" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDFmjhdxPnBLwwuLJzUNnkT6HVoqOdxc5Rge-IyO_cnQoBC8oI9WS-B2Ebiu-BwVX0yhHwiHWyqQ0SPbhS2e1ZE1pSAjDzTYKkvpvv-OjtQPA-lQpJ3IL6pAyw85gnesq0G1TNwceawlsx9RaXAyvFHVx50BCZYHvKWe1n-MmiAFhDKHLqJ25YPbK7nkTMBhU5p6p9QDFzPC8VUZWoMRAEEmWQ1GxVbSQqSgPLemIDnKe8zNjS4Bvl_OAVYXghHNwy07uipuzknUaBd");'></div>
+</div>
+</header>
+</div>
+</div>
+<main class="flex flex-1 justify-center py-8">
+<div class="layout-content-container flex flex-col w-full max-w-[1000px] flex-1 px-4">
+<!-- PageHeading Component -->
+<div class="flex flex-wrap justify-between items-end gap-3 mb-6">
+<div class="flex min-w-72 flex-col gap-1">
+<p class="text-black dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">My Orders History</p>
+<p class="text-slate-500 dark:text-[#90a4cb] text-base font-normal leading-normal">Track and manage your crypto gift card purchases</p>
+</div>
+</div>
+<!-- Stats Component -->
+<div class="flex flex-wrap gap-4 mb-8">
+<div class="flex min-w-[180px] flex-1 flex-col gap-2 rounded-xl p-6 border border-slate-200 dark:border-[#314368] bg-white/50 dark:bg-[#1e293b]/30">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-normal">Total Spent</p>
+<div class="flex flex-col">
+<p class="text-black dark:text-white tracking-light text-2xl font-bold leading-tight">$4,250.00</p>
+<p class="text-primary text-xs font-semibold">≈ 1.62 ETH</p>
+</div>
+</div>
+<div class="flex min-w-[180px] flex-1 flex-col gap-2 rounded-xl p-6 border border-slate-200 dark:border-[#314368] bg-white/50 dark:bg-[#1e293b]/30">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-normal">Cards Purchased</p>
+<p class="text-black dark:text-white tracking-light text-2xl font-bold leading-tight">42</p>
+</div>
+<div class="flex min-w-[180px] flex-1 flex-col gap-2 rounded-xl p-6 border border-slate-200 dark:border-[#314368] bg-white/50 dark:bg-[#1e293b]/30">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-normal">Active Cards</p>
+<p class="text-black dark:text-white tracking-light text-2xl font-bold leading-tight">7</p>
+</div>
+</div>
+<!-- Filter Section -->
+<div class="flex flex-col gap-4 mb-4">
+<!-- Tabs Component -->
+<div class="border-b border-slate-200 dark:border-[#314368]">
+<div class="flex gap-8">
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-primary text-primary pb-[13px] pt-4" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">All Orders</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-slate-500 dark:text-[#90a4cb] pb-[13px] pt-4 hover:text-primary transition-colors" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Completed</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-slate-500 dark:text-[#90a4cb] pb-[13px] pt-4 hover:text-primary transition-colors" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Pending</p>
+</a>
+</div>
+</div>
+<!-- SearchBar Component -->
+<div class="flex gap-3 items-center">
+<div class="flex-1">
+<label class="flex flex-col min-w-40 h-12 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-white dark:bg-[#222f49] border border-slate-200 dark:border-none shadow-sm">
+<div class="text-slate-400 dark:text-[#90a4cb] flex items-center justify-center pl-4">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-black dark:text-white focus:outline-0 focus:ring-0 border-none bg-transparent h-full placeholder:text-slate-400 dark:placeholder:text-[#90a4cb] px-4 pl-2 text-base font-normal leading-normal" placeholder="Search by brand or order ID" value=""/>
+</div>
+</label>
+</div>
+<button class="flex h-12 px-4 items-center justify-center gap-2 rounded-lg bg-white dark:bg-[#222f49] border border-slate-200 dark:border-none text-slate-600 dark:text-white font-medium">
+<span class="material-symbols-outlined text-xl">filter_list</span>
+<span>Filter</span>
+</button>
+</div>
+</div>
+<!-- Orders Table / List View -->
+<div class="overflow-hidden rounded-xl border border-slate-200 dark:border-[#314368] bg-white dark:bg-[#161e2e]">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-slate-200 dark:border-[#314368] bg-slate-50 dark:bg-[#1e293b]/50">
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-[#90a4cb] uppercase tracking-wider">Brand</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-[#90a4cb] uppercase tracking-wider">Order ID</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-[#90a4cb] uppercase tracking-wider">Date</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-[#90a4cb] uppercase tracking-wider">Amount</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-[#90a4cb] uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-[#90a4cb] uppercase tracking-wider text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-[#314368]">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-[#1e293b] transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-black flex items-center justify-center overflow-hidden border border-slate-700">
+<img class="w-full h-full object-cover" data-alt="Amazon logo brand icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiR2J8HwZ2fBnv7zfye1oFGdxsVTvYC_S143UxihXz_5yiwXq9waqZK_aB5z9-oktYBCUcoZ4MpEgS-HxXCquKdsfFCt4ktmsnVA6hrdrCv2lVWNQnLA2BwFgXMqmzXBDzMjE3mW0z9iVtC5cShwz2ZXF5ef28sAc_ArvZf0489vNXtLOTbPKIIJ5JCLRYORkhDM39HbUlv9xKov4eVVNWs6Igdgo-dTf0GYCa3R1wK2ng8BH3uM4y4L6PcAIrum4WLdJsXUewXrw3"/>
+</div>
+<span class="text-black dark:text-white font-semibold">Amazon US</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-slate-500 dark:text-[#90a4cb] font-mono">#NV-84291</td>
+<td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-300">Oct 24, 2023</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-black dark:text-white font-bold">$100.00</span>
+<span class="text-xs text-primary">0.038 ETH</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                                            Delivered
+                                        </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-primary font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 justify-end w-full">
+                                            View Details <span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-[#1e293b] transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-[#1c1c1c] flex items-center justify-center overflow-hidden border border-slate-700">
+<img class="w-full h-full object-cover" data-alt="Apple logo brand icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBV47gLKWW19QjH4MpiVXmCcx9c7hLUuRGL-zLFj8iPtuzEiqQcFLFHfj0ocC6ahahVkwlw0MgapXIi0MM42c6xaJgu7YBJT2E3ReNRtDi4o1GbTp5So064A6wLMVgFUwCtzTPX_AfV48ln-JooYljhRsNjUYLYpzGFiH1acbcHL-XG2JE4SUW9_RNZc4IFmeL_6NeQ4SqEAZKYh4_DvH5QEn65tbPnyaMxO4RLZp08J9NmegX64lUoMA1Wss-d7AAupyNye811PfB"/>
+</div>
+<span class="text-black dark:text-white font-semibold">Apple Store</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-slate-500 dark:text-[#90a4cb] font-mono">#NV-84275</td>
+<td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-300">Oct 20, 2023</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-black dark:text-white font-bold">$250.00</span>
+<span class="text-xs text-primary">0.096 ETH</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                                            Delivered
+                                        </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-primary font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 justify-end w-full">
+                                            View Details <span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-[#1e293b] transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-[#00704A] flex items-center justify-center overflow-hidden border border-slate-700">
+<img class="w-full h-full object-cover" data-alt="Starbucks logo brand icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLIeQOSD3CSLMQmhxzw8GCuZzmaLJVGEt_yJtguM5h0bWgBuoWx5ZotmtMJj0QX_e1aUVt9VbXjHQAVF6GBz_LVXcpjd5pWiUDC-_lIfKdphfTjd-Ju-jdlEclzwe2qRc_vdBPpauhtN0kD2rVMS26UOeFWzaSd1b2ijErfUvGTwz2i2UX_LXhg0se8zpErgtO7LbpVDMZ6p4h5g83-ZXfgom78-ZhTLE9ZkYptcm6PVFsAy6TPYUrAunDht6fKZNTDrHyKkHjqwPC"/>
+</div>
+<span class="text-black dark:text-white font-semibold">Starbucks</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-slate-500 dark:text-[#90a4cb] font-mono">#NV-84199</td>
+<td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-300">Oct 15, 2023</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-black dark:text-white font-bold">$25.00</span>
+<span class="text-xs text-primary">0.009 ETH</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                                            Pending
+                                        </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-primary font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 justify-end w-full">
+                                            View Details <span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-[#1e293b] transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-[#e50914] flex items-center justify-center overflow-hidden border border-slate-700">
+<img class="w-full h-full object-cover" data-alt="Netflix logo brand icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUQauUr5Hd1FuxDSbAYYMrZoiuGzDsoksC683dIWa8VsurlgRERu7boZWuzsjQZYBXcFQ7gbuDG2wHeqyk7lifnWIq-HaNTVB6Z8wFCyeOSAw-l5cyyZze3vHTTBvt7up2ZTW02N236mnzFPSAFZph3Q9DxOReBUCEgFv6g840TCNMkMa318rb5rRch8qUb_qxEmJJceCyUwxghJM8jPIqkYky4E0MqzJ4qFYmwQ5TQEkMkjAo9ONt_dEa6fwPxPlec8lRtzqqo_oj"/>
+</div>
+<span class="text-black dark:text-white font-semibold">Netflix</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-slate-500 dark:text-[#90a4cb] font-mono">#NV-84152</td>
+<td class="px-6 py-5 text-sm text-slate-600 dark:text-slate-300">Oct 12, 2023</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-black dark:text-white font-bold">$15.00</span>
+<span class="text-xs text-primary">0.005 ETH</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                                            Delivered
+                                        </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-primary font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 justify-end w-full">
+                                            View Details <span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<div class="px-6 py-4 flex items-center justify-between border-t border-slate-200 dark:border-[#314368] bg-slate-50 dark:bg-[#1e293b]/30">
+<p class="text-sm text-slate-500 dark:text-[#90a4cb]">Showing 1 to 4 of 42 results</p>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg border border-slate-200 dark:border-[#314368] text-slate-400 dark:text-slate-300 hover:bg-white dark:hover:bg-[#222f49] disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-2 rounded-lg border border-slate-200 dark:border-[#314368] text-slate-400 dark:text-slate-300 hover:bg-white dark:hover:bg-[#222f49]">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Small -->
+<footer class="flex flex-col items-center justify-center py-10 opacity-50">
+<p class="text-sm text-slate-500 dark:text-[#90a4cb] font-display">© 2023 NovaCard. All transactions secured via Smart Contracts.</p>
+</footer>
+</div>
+</div>
+</body></html>

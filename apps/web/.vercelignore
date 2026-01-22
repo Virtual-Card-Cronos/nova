@@ -1,0 +1,2 @@
+# Vercel will build from apps/web but needs access to parent directories
+# This file ensures the build process can access services/agent

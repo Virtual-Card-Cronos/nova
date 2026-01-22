@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nova-x402 | Agent Transaction History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0df269",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#102217",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between border-b border-solid border-[#224932] px-10 py-3 bg-background-light dark:bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-primary">
+<div class="size-8 flex items-center justify-center bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary">smart_toy</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-tight">Nova-x402</h2>
+</div>
+<label class="flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full overflow-hidden">
+<div class="text-[#90cba8] flex border-none bg-[#224932] items-center justify-center pl-4">
+<span class="material-symbols-outlined text-sm">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden text-white focus:outline-0 focus:ring-0 border-none bg-[#224932] placeholder:text-[#90cba8] pl-2 text-sm font-normal" placeholder="Search hash or brand..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-white/60 hover:text-primary text-sm font-medium transition-colors" href="#">Dashboard</a>
+<a class="text-primary text-sm font-bold border-b-2 border-primary pb-1" href="#">History</a>
+<a class="text-white/60 hover:text-primary text-sm font-medium transition-colors" href="#">Assets</a>
+<a class="text-white/60 hover:text-primary text-sm font-medium transition-colors" href="#">Settings</a>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-[#224932] text-white hover:bg-[#2c5d41] transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-[#224932] text-white hover:bg-[#2c5d41] transition-colors">
+<span class="material-symbols-outlined text-[20px]">help</span>
+</button>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 ring-2 ring-primary/20" data-alt="User avatar placeholder" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAMU84yxAeC0DtoRtsAzttVR9myA1L5eOlvrlxS1OvQ1HPTevwaLP-qywHs9MqeF1CYh3hnsApXpm7uB5m0rMp-EsGNKM3koWrSdFwXw2719y-rY9Jzr-dFLuRoCXMjHVwzyDjw6pNl87E71oPeA9cbkeLrZ2UEC5RzqAvm61tgXjxOb0sAhwRpkxEvUj5Nxs6ZrxkMsxsuM3chqM-utWT1OmgcQ0BetYXKEbf0zAfJFQI8PRFVMDTLVeFPsM3JZbz-hjDPYHHVGAIv");'></div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto pb-12">
+<div class="max-w-[1200px] mx-auto px-6 py-8">
+<!-- Page Heading -->
+<div class="flex flex-wrap justify-between items-end gap-3 mb-8">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="size-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-primary text-xs font-bold uppercase tracking-widest">Live Agent Monitoring</span>
+</div>
+<h1 class="text-white text-4xl font-black leading-tight tracking-tight">Transaction History</h1>
+<p class="text-[#90cba8] text-base font-normal max-w-2xl">
+                            Autonomous settlement logs for the Nova-x402 gift card concierge on Cronos EVM.
+                        </p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded-lg h-11 px-5 bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all text-sm font-bold">
+<span class="material-symbols-outlined mr-2 text-[20px]">filter_list</span>
+                            Filter
+                        </button>
+<button class="flex items-center justify-center rounded-lg h-11 px-5 bg-[#224932] text-white hover:bg-[#2c5d41] transition-all text-sm font-bold">
+<span class="material-symbols-outlined mr-2 text-[20px]">download</span>
+                            Export CSV
+                        </button>
+</div>
+</div>
+<!-- Summary Stats -->
+<div class="flex flex-wrap gap-4 mb-8">
+<div class="flex min-w-[240px] flex-1 flex-col gap-2 rounded-xl p-6 border border-[#316847] bg-[#142d1e]">
+<div class="flex justify-between items-center mb-1">
+<p class="text-[#90cba8] text-sm font-medium">Total Volume</p>
+<span class="material-symbols-outlined text-[#90cba8] text-[20px]">payments</span>
+</div>
+<p class="text-white tracking-tight text-3xl font-bold">$124,450.00</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-sm">trending_up</span>
+<p class="text-primary text-sm font-bold">+12.5% this month</p>
+</div>
+</div>
+<div class="flex min-w-[240px] flex-1 flex-col gap-2 rounded-xl p-6 border border-[#316847] bg-[#142d1e]">
+<div class="flex justify-between items-center mb-1">
+<p class="text-[#90cba8] text-sm font-medium">Agent Settlements</p>
+<span class="material-symbols-outlined text-[#90cba8] text-[20px]">bolt</span>
+</div>
+<p class="text-white tracking-tight text-3xl font-bold">1,842</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-sm">trending_up</span>
+<p class="text-primary text-sm font-bold">+4% vs last week</p>
+</div>
+</div>
+<div class="flex min-w-[240px] flex-1 flex-col gap-2 rounded-xl p-6 border border-[#316847] bg-[#142d1e]">
+<div class="flex justify-between items-center mb-1">
+<p class="text-[#90cba8] text-sm font-medium">Success Rate</p>
+<span class="material-symbols-outlined text-[#90cba8] text-[20px]">verified</span>
+</div>
+<p class="text-white tracking-tight text-3xl font-bold">99.98%</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[#fa5538] text-sm">trending_flat</span>
+<p class="text-[#90cba8] text-sm font-medium">Stabilized at peak</p>
+</div>
+</div>
+</div>
+<!-- Tabs -->
+<div class="mb-6">
+<div class="flex border-b border-[#316847] px-2 gap-8">
+<button class="flex items-center justify-center border-b-[3px] border-b-transparent text-[#90cba8] pb-4 pt-2 font-bold text-sm hover:text-white transition-all">
+                            All Transactions
+                        </button>
+<button class="flex items-center justify-center border-b-[3px] border-primary text-primary pb-4 pt-2 font-bold text-sm">
+                            Agent-Triggered
+                        </button>
+<button class="flex items-center justify-center border-b-[3px] border-b-transparent text-[#90cba8] pb-4 pt-2 font-bold text-sm hover:text-white transition-all">
+                            Manual Overrides
+                        </button>
+<button class="flex items-center justify-center border-b-[3px] border-b-transparent text-[#90cba8] pb-4 pt-2 font-bold text-sm hover:text-white transition-all">
+                            Failed Attempts
+                        </button>
+</div>
+</div>
+<!-- Transaction Table -->
+<div class="bg-[#102318] rounded-xl border border-[#316847] overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-[#183423] border-b border-[#316847]">
+<th class="px-6 py-4 text-white text-xs font-bold uppercase tracking-wider w-[20%]">Brand</th>
+<th class="px-6 py-4 text-white text-xs font-bold uppercase tracking-wider w-[20%]">Amount (USD/CRO)</th>
+<th class="px-6 py-4 text-white text-xs font-bold uppercase tracking-wider w-[15%]">Date</th>
+<th class="px-6 py-4 text-white text-xs font-bold uppercase tracking-wider w-[18%]">Settlement Method</th>
+<th class="px-6 py-4 text-white text-xs font-bold uppercase tracking-wider w-[12%]">Status</th>
+<th class="px-6 py-4 text-white text-xs font-bold uppercase tracking-wider w-[15%]">TX Hash</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#316847]">
+<!-- Row 1 -->
+<tr class="hover:bg-[#1a3a27] transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded bg-white p-1 flex items-center justify-center">
+<img alt="Amazon Logo" class="max-h-full" data-alt="Amazon Brand Logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXF4NmCGhcRPejtfv44Ekndzvvd-RHJwKTPOHUNaHdDLVnprkuNvDPW4_UYqWyfD-0KEHGfAAio1b3RAQnaHmjk8j0gAdhsbfnQzEpf3H-q7h_sPMJzH1VNTLABwExumRxUahjWYproo2lF9xd-teUSpFQlHPZ6QLNomuvKe9BHv190E1iN9sIg3VVpmGqSGSjJ0FFkAb58ND2bH43AK_ssLEsTQNKWRiFwswZ9JMt0YaOsWCWXD481_KVYvm0bj8ULUi8IiHY69W3"/>
+</div>
+<span class="text-white font-semibold">Amazon</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-white font-bold">$100.00</span>
+<span class="text-[#90cba8] text-xs">524.32 CRO</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-white text-sm">Oct 24, 2023</span>
+<span class="text-[#90cba8] text-xs">14:20:05</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 bg-[#224932] rounded-lg px-3 py-1.5 w-fit border border-primary/20">
+<span class="material-symbols-outlined text-primary text-[16px]">smart_toy</span>
+<span class="text-white text-xs font-bold truncate">x402 Facilitator</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary w-fit border border-primary/20">
+<span class="size-1.5 rounded-full bg-primary"></span>
+<span class="text-[11px] font-bold uppercase tracking-wider">Settled</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<a class="text-primary text-sm font-mono hover:underline flex items-center gap-1" href="#">
+                                            0x4a2...3f1
+                                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-[#1a3a27] transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded bg-black p-1 flex items-center justify-center">
+<img alt="Nike Logo" class="max-h-full invert" data-alt="Nike Brand Logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZq59eHkgW6S0UXMs_zybSdsayn_ewJ5V_CPvlqjhxigBYMjmP6OYSkJFjKqqrhskFRyKTSCF3sBo1DDWz_d9kSIRLq3O-NEK-AVGY-hgEBsTqsjetqZeOaQLFLVmIn87RHB_94zL90l5fJ3l1YvbIovuHvYab4mbpEDmt4FEe0l0MAdtcd_v-BirW_vZgS20St_Sa25js5F7ZxNLGGdGRlkYX9L1Dk8eSjim4rOkWbvutsQlHNLLWnj416qMUIigL75hhkQTF1ubA"/>
+</div>
+<span class="text-white font-semibold">Nike</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-white font-bold">$250.00</span>
+<span class="text-[#90cba8] text-xs">1,310.81 CRO</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-white text-sm">Oct 24, 2023</span>
+<span class="text-[#90cba8] text-xs">12:05:41</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 bg-[#224932] rounded-lg px-3 py-1.5 w-fit border border-primary/20">
+<span class="material-symbols-outlined text-primary text-[16px]">smart_toy</span>
+<span class="text-white text-xs font-bold truncate">x402 Facilitator</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary w-fit border border-primary/20">
+<span class="size-1.5 rounded-full bg-primary"></span>
+<span class="text-[11px] font-bold uppercase tracking-wider">Settled</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<a class="text-primary text-sm font-mono hover:underline flex items-center gap-1" href="#">
+                                            0x9b1...8e4
+                                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-[#1a3a27] transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded bg-[#006241] p-1 flex items-center justify-center">
+<img alt="Starbucks Logo" class="max-h-full" data-alt="Starbucks Brand Logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_RdwA-W40FaJ3lWq-SgFeck4bF29rPKsh6b-7ebMxrLuRtjZ-GsWq_46pVTBrYSfD8bRvP-Ts2s8D7Z0FmM_Z3rW1P5PJjjgLHgiXO4fzPNik065NGiw0le8GB3Z4ZABL4_VoOWmHW6bSAptSXEgeZDlry4Kc1TMzeHG-0iDegEeY6cpW31MoxnFjUe5ZrTT3gmF8xVz3C_AOqbQCmFulAYWKAmKQd1MM3ziNHK0_EFhm3LBZWYnH3KXTxnstD7SkMqtRin7oW0GA"/>
+</div>
+<span class="text-white font-semibold">Starbucks</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-white font-bold">$15.00</span>
+<span class="text-[#90cba8] text-xs">78.65 CRO</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-white text-sm">Oct 23, 2023</span>
+<span class="text-[#90cba8] text-xs">18:45:12</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 bg-[#224932] rounded-lg px-3 py-1.5 w-fit border border-primary/20">
+<span class="material-symbols-outlined text-primary text-[16px]">smart_toy</span>
+<span class="text-white text-xs font-bold truncate">x402 Facilitator</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-400/10 text-yellow-400 w-fit border border-yellow-400/20">
+<span class="size-1.5 rounded-full bg-yellow-400"></span>
+<span class="text-[11px] font-bold uppercase tracking-wider">Processing</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<a class="text-primary text-sm font-mono hover:underline flex items-center gap-1" href="#">
+                                            0x2c5...a12
+                                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-[#1a3a27] transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded bg-white p-1 flex items-center justify-center">
+<img alt="Apple Logo" class="max-h-full" data-alt="Apple Brand Logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9VaFbq_hntm1yzf1mTb_xVxfUE5FWcQ2SlWfts7nvmqx2Pp7z2PABGuILELH9Y7TcXLqqLBRVEW_dXU_8w6jUTRgxZuwfZHyUjtOQh3AEOar26kmW0xrFx2FtopXmHfl5aNJrw-jqbVV4W3eBgmVTKDA1enBBFF9-UnYXRuHl9jKDLMY0Xdgadsgu-tWTzonX9QZFzLaGBRS2iHQZhWtjDkLZouvtbZNM073vTGNQpvScafqfHdcGUWXB83NmAzsYKK-94jNK165o"/>
+</div>
+<span class="text-white font-semibold">Apple</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-white font-bold">$499.00</span>
+<span class="text-[#90cba8] text-xs">2,615.55 CRO</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-white text-sm">Oct 23, 2023</span>
+<span class="text-[#90cba8] text-xs">09:12:33</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 bg-[#224932] rounded-lg px-3 py-1.5 w-fit border border-primary/20">
+<span class="material-symbols-outlined text-primary text-[16px]">smart_toy</span>
+<span class="text-white text-xs font-bold truncate">x402 Facilitator</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary w-fit border border-primary/20">
+<span class="size-1.5 rounded-full bg-primary"></span>
+<span class="text-[11px] font-bold uppercase tracking-wider">Settled</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<a class="text-primary text-sm font-mono hover:underline flex items-center gap-1" href="#">
+                                            0x7d3...44b
+                                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-[#1a3a27] transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded bg-black p-1 flex items-center justify-center">
+<img alt="Uber Logo" class="max-h-[14px] invert" data-alt="Uber Brand Logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3in7AA6gn6DhXB1PZmt0r0_THvk69q5fjxikaC1Tz2FZCCQDyD3n26Ms05oc7d5W_oy7W_0PhuT8pyV8Sjw9nqK8QbEX5L98edZ2hc6LPQEkf_tKcoD1x5JL5ErSrBS5CPvOrscx3mDnsQyykSjj06-ua5M2mVVbFmC_h3f4RPTx6hMz94Vmpgg6vrEIrseVeE4rbkrbv9ox04mtBKgMxnJ5Q_04NJcK_fuABXWDNxhw_8PuJQj6nz4j4OKYhTZjObS-hQhELo8LR"/>
+</div>
+<span class="text-white font-semibold">Uber</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-white font-bold">$25.00</span>
+<span class="text-[#90cba8] text-xs">131.08 CRO</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-white text-sm">Oct 22, 2023</span>
+<span class="text-[#90cba8] text-xs">16:30:00</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 bg-[#224932] rounded-lg px-3 py-1.5 w-fit border border-primary/20">
+<span class="material-symbols-outlined text-primary text-[16px]">smart_toy</span>
+<span class="text-white text-xs font-bold truncate">x402 Facilitator</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary w-fit border border-primary/20">
+<span class="size-1.5 rounded-full bg-primary"></span>
+<span class="text-[11px] font-bold uppercase tracking-wider">Settled</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<a class="text-primary text-sm font-mono hover:underline flex items-center gap-1" href="#">
+                                            0xfe8...bc9
+                                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="flex items-center justify-between px-6 py-4 bg-[#183423] border-t border-[#316847]">
+<p class="text-[#90cba8] text-sm">Showing 1-5 of 1,842 agent settlements</p>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center rounded-lg h-8 px-3 border border-[#316847] text-white opacity-50 cursor-not-allowed text-xs font-bold">
+<span class="material-symbols-outlined text-[16px] mr-1">chevron_left</span> Previous
+                            </button>
+<div class="flex items-center gap-1 px-4 text-white text-sm">
+<span class="font-bold text-primary">1</span>
+<span class="opacity-50">/</span>
+<span class="opacity-50">369</span>
+</div>
+<button class="flex items-center justify-center rounded-lg h-8 px-3 border border-primary/30 text-white hover:bg-primary/10 transition-colors text-xs font-bold">
+                                Next <span class="material-symbols-outlined text-[16px] ml-1">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Notification Toast (Agent Status) -->
+<div class="fixed bottom-8 right-8 flex items-center gap-4 bg-[#102318] border border-primary/40 rounded-xl p-4 shadow-2xl shadow-primary/10 max-w-sm">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center relative">
+<span class="material-symbols-outlined text-primary">robot_2</span>
+<span class="absolute top-0 right-0 size-3 bg-primary rounded-full ring-2 ring-[#102318]"></span>
+</div>
+<div class="flex flex-col">
+<p class="text-white text-sm font-bold">Nova-x402 Active</p>
+<p class="text-[#90cba8] text-xs">Scanning Cronos EVM for optimal settlement routes...</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

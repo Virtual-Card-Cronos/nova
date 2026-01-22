@@ -1,0 +1,40 @@
+{
+  "name": "novaagent-monorepo",
+  "version": "1.0.0",
+  "description": "NovaAgent - AI Shopping Concierge with Aegis Pattern",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/web",
+    "build": "npm run build --workspace=packages/shared && npm run build --workspace=apps/web",
+    "contracts:build": "npm run build --workspace=packages/contracts",
+    "contracts:test": "npm run test --workspace=packages/contracts",
+    "lint": "npm run lint --workspace=apps/web",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules apps/web/.next packages/shared/dist packages/contracts/out"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/novaagent.git"
+  },
+  "keywords": [
+    "ai",
+    "blockchain",
+    "web3",
+    "shopping",
+    "crypto",
+    "defi",
+    "hackathon"
+  ],
+  "author": "NovaAgent Team",
+  "license": "MIT"
+}

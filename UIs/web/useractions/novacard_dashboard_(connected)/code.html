@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NovaCard Dashboard (Connected)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#256af4",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #222f49;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
+<!-- Global Navigation Bar -->
+<header class="sticky top-0 z-50 w-full border-b border-solid border-[#222f49] bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 md:px-10 py-3">
+<div class="max-w-[1280px] mx-auto flex items-center justify-between gap-4">
+<!-- Logo & Search -->
+<div class="flex items-center gap-8 flex-1">
+<div class="flex items-center gap-2 text-primary">
+<div class="size-8 flex items-center justify-center bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary text-2xl">account_balance_wallet</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight">NovaCard</h2>
+</div>
+<div class="hidden md:flex flex-col min-w-64 max-w-md w-full">
+<div class="flex w-full items-stretch rounded-xl h-10 bg-slate-200 dark:bg-[#222f49] group border border-transparent focus-within:border-primary/50 transition-all">
+<div class="text-[#90a4cb] flex items-center justify-center pl-4">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full bg-transparent border-none focus:ring-0 text-slate-900 dark:text-white placeholder:text-[#90a4cb] text-sm font-normal px-3" placeholder="Search cards, games, or brands" value=""/>
+</div>
+</div>
+</div>
+<!-- Navigation Links & Wallet Status -->
+<div class="flex items-center gap-4 md:gap-8">
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-slate-600 dark:text-white text-sm font-semibold hover:text-primary transition-colors" href="#">Shop</a>
+<a class="text-slate-600 dark:text-white text-sm font-semibold hover:text-primary transition-colors" href="#">Transactions</a>
+<div class="flex items-center gap-1.5 px-3 py-1 bg-green-500/10 rounded-full border border-green-500/20">
+<span class="size-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-[10px] font-bold text-green-500 uppercase tracking-wider">Mainnet</span>
+</div>
+</nav>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 bg-primary hover:bg-primary/90 transition-all text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-primary/20">
+<span class="truncate max-w-[100px] md:max-w-none">0x1a2b...3c4d</span>
+</button>
+<!-- 3D Avatar Placeholder -->
+<div class="size-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-lg border-2 border-white dark:border-[#222f49] overflow-hidden" data-alt="Vibrant 3D abstract character avatar">
+<div class="w-full h-full bg-[url('https://placeholder.pics/svg/100/A855F7/FFFFFF/Avatar')] bg-cover"></div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1280px] mx-auto px-4 md:px-10 py-8">
+<!-- Hero/Announcement Section -->
+<section class="@container mb-10">
+<div class="relative overflow-hidden rounded-2xl bg-slate-200 dark:bg-[#1e293b]">
+<div class="flex min-h-[320px] flex-col gap-6 bg-cover bg-center bg-no-repeat p-8 md:p-12 items-start justify-center relative z-10" data-alt="Abstract dark blue and purple gradient background" style='background-image: linear-gradient(90deg, rgba(16, 22, 34, 0.9) 0%, rgba(16, 22, 34, 0.4) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBKBEaRuTXAW8LpD2OrqCEyGZQslEc6C4cMiu1I4mYKgyRlF3U-hHnl1bCgLn127BVW0Rwt2APsfZDcaX8wBa9N9aBQ8MIRylyKSggJoQAG0nC9kwcC4I7JWdda_s3grjdr_iYwJr1TZVkUaUiVXP4b-Zk2-_YgJhlSriPLeY-NOum-pTG76-0t49CwPpdx9kTnWIY5360dH4R3fRiYiKIrnC9OstubmjK-JbaFll1pCl5hqbi91XUo0i-pFhM5vNFxUZw14rtGsKkX");'>
+<div class="flex flex-col gap-3 max-w-xl">
+<span class="bg-primary/20 text-primary text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full w-fit">Summer Special</span>
+<h1 class="text-white text-3xl md:text-5xl font-black leading-tight tracking-[-0.033em]">
+                            New Crypto Promotions
+                        </h1>
+<p class="text-slate-300 text-base md:text-lg font-medium leading-relaxed">
+                            Get up to <span class="text-primary font-bold">5% cashback</span> on all gaming gift cards when paying with ETH or USDC.
+                        </p>
+</div>
+<button class="flex min-w-[140px] cursor-pointer items-center justify-center rounded-xl h-12 px-6 bg-primary text-white text-base font-bold transition-transform hover:scale-105 shadow-xl shadow-primary/30">
+                        View Deals
+                    </button>
+</div>
+</div>
+</section>
+<!-- Catalog Section -->
+<section>
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-6 px-2">
+<div>
+<h2 class="text-slate-900 dark:text-white tracking-tight text-3xl font-extrabold">Explore Gift Cards</h2>
+<p class="text-slate-500 dark:text-[#90a4cb] text-sm mt-1 font-medium">Redeem your crypto for top global brands instantly.</p>
+</div>
+<div class="mt-4 md:mt-0 flex items-center gap-2 text-sm font-semibold text-primary cursor-pointer hover:underline">
+                    View all brands
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</div>
+<!-- Category Filter Rail -->
+<div class="flex gap-3 px-2 mb-8 overflow-x-auto custom-scrollbar pb-2">
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-primary px-6 text-white text-sm font-bold shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-lg">apps</span>
+                    All
+                </button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-slate-200 dark:bg-[#222f49] px-6 text-slate-700 dark:text-white text-sm font-semibold hover:bg-slate-300 dark:hover:bg-[#2d3b5a] transition-colors">
+<span class="material-symbols-outlined text-lg">star</span>
+                    Popular
+                </button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-slate-200 dark:bg-[#222f49] px-6 text-slate-700 dark:text-white text-sm font-semibold hover:bg-slate-300 dark:hover:bg-[#2d3b5a] transition-colors">
+<span class="material-symbols-outlined text-lg">sports_esports</span>
+                    Gaming
+                </button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-slate-200 dark:bg-[#222f49] px-6 text-slate-700 dark:text-white text-sm font-semibold hover:bg-slate-300 dark:hover:bg-[#2d3b5a] transition-colors">
+<span class="material-symbols-outlined text-lg">shopping_bag</span>
+                    E-commerce
+                </button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-slate-200 dark:bg-[#222f49] px-6 text-slate-700 dark:text-white text-sm font-semibold hover:bg-slate-300 dark:hover:bg-[#2d3b5a] transition-colors">
+<span class="material-symbols-outlined text-lg">restaurant</span>
+                    Food &amp; Drink
+                </button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-slate-200 dark:bg-[#222f49] px-6 text-slate-700 dark:text-white text-sm font-semibold hover:bg-slate-300 dark:hover:bg-[#2d3b5a] transition-colors">
+<span class="material-symbols-outlined text-lg">flight</span>
+                    Travel
+                </button>
+</div>
+<!-- Catalog Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-2">
+<!-- Card Item 1 -->
+<div class="group bg-slate-200 dark:bg-[#1e293b] rounded-2xl overflow-hidden border border-transparent hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/10">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover transition-transform group-hover:scale-105 duration-500" data-alt="Amazon gift card with colorful swoosh logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAX07RUnzrVOeFZrK6UjpECDxeKNvLkz4HxW_fSBsL0394a8-DNsHVCnJjW06dJ97EZrlkHZ8pTP3r4kcLfUvAzyDjCuUZLrVYNw4J_c1CR90Iw6WWVFYWFy3twwhKMLj5FlwjnDbLbk2W38OEdiBOnHYK7Ho8INlhN_GqIDEmm7aDoo0JRRRAT6IX4BnS1J6rhDryJcySv9Y9XEFBtuNOM8IZab_30kpbRMt72i99BKpl3IbN2nKTG7BXtAyVpoo2P9A_L_AxwQVp6");'></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Amazon</p>
+<span class="text-[10px] font-bold bg-green-500/10 text-green-500 px-2 py-0.5 rounded uppercase">Instant</span>
+</div>
+<p class="text-slate-500 dark:text-[#90a4cb] text-sm font-medium">Shop everything</p>
+<div class="mt-4 flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="size-6 rounded-full bg-slate-800 border-2 border-[#1e293b] flex items-center justify-center text-[8px] font-bold text-white">ETH</div>
+<div class="size-6 rounded-full bg-emerald-600 border-2 border-[#1e293b] flex items-center justify-center text-[8px] font-bold text-white">USDT</div>
+</div>
+<button class="bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all px-4 py-1.5 rounded-lg text-sm font-bold">Buy</button>
+</div>
+</div>
+</div>
+<!-- Card Item 2 -->
+<div class="group bg-slate-200 dark:bg-[#1e293b] rounded-2xl overflow-hidden border border-transparent hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/10">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover transition-transform group-hover:scale-105 duration-500" data-alt="Steam gaming platform logo in dark blue" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCMV6I6SKmx4cqvwLPhOBE78JVIF3L3RKpbwdzjghYsBlQcHr3RPK1d2FELl8Ve5srtdVbkBUhDZiKSHqPVc290UDFziJbaWDrp3a7JXDyTv0r5gXfUAdPWWfXABwvkIwuQUOmD01-PMWHtsadlg6htBaS5q6F2Ac3fhA0F-aQeJzmbtP4rqkjpL-iJb4-ga9tBguEI23iyFlWAb_DMmK6Aw9ZGtEEGrUFU4Zu6N4x0BPGxk8oCDREfRO4TlTlwP9UxSHmSJ-6xkAdr");'></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Steam</p>
+<span class="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded uppercase">Popular</span>
+</div>
+<p class="text-slate-500 dark:text-[#90a4cb] text-sm font-medium">Gaming &amp; Software</p>
+<div class="mt-4 flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="size-6 rounded-full bg-slate-800 border-2 border-[#1e293b] flex items-center justify-center text-[8px] font-bold text-white">ETH</div>
+<div class="size-6 rounded-full bg-purple-600 border-2 border-[#1e293b] flex items-center justify-center text-[8px] font-bold text-white">POL</div>
+</div>
+<button class="bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all px-4 py-1.5 rounded-lg text-sm font-bold">Buy</button>
+</div>
+</div>
+</div>
+<!-- Card Item 3 -->
+<div class="group bg-slate-200 dark:bg-[#1e293b] rounded-2xl overflow-hidden border border-transparent hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/10">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover transition-transform group-hover:scale-105 duration-500" data-alt="Roblox logo in simple white and black" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD6HFqAsFpGlSw5J4npUBngW1cU04Epxh8Qw6aPXc0VLJ-aL_sT6iHKZHdTsAM96fNL08P63ajrzmvBFexyiE73aArNLXgKBvLiDkBcqeDINuXQ-MCTSo63xvktcsuuGcySAaedIy2LRuHEh437zLzUEeRNJQDSTVDDSol5c3F61CnLUs0zFEGGQvaPtfDDoRDHLRE9EA2WzFCSPEBYB7jcaex9pLj1QCH03njyIKAaMUIsL9pq0XqICeKvf9sKaaE_TWZvkQakZgaU");'></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Roblox</p>
+</div>
+<p class="text-slate-500 dark:text-[#90a4cb] text-sm font-medium">Digital currency</p>
+<div class="mt-4 flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="size-6 rounded-full bg-slate-800 border-2 border-[#1e293b] flex items-center justify-center text-[8px] font-bold text-white">ETH</div>
+<div class="size-6 rounded-full bg-blue-500 border-2 border-[#1e293b] flex items-center justify-center text-[8px] font-bold text-white">USDC</div>
+</div>
+<button class="bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all px-4 py-1.5 rounded-lg text-sm font-bold">Buy</button>
+</div>
+</div>
+</div>
+<!-- Card Item 4 -->
+<div class="group bg-slate-200 dark:bg-[#1e293b] rounded-2xl overflow-hidden border border-transparent hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/10">
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover transition-transform group-hover:scale-105 duration-500" data-alt="Starbucks green roundel logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBSmrZ-yj01YhstGju9OOZF0Hd07UPsRiSvdkYrfWgulhRIK_y0FywnAfS-HjJF5_7ISjHsYs20l_snSEwfi4hrC2yD7CWxKMsNsfqgCdspfRf5D7qttw7S42uu1lTtRZEj4QTLcjgnG4ZjgajBM0fcJ5TepJvHLDD5cKHW5yu5eZvM9trebzzpz8c01B4-5mCV5fx_jmQkRdeW1gDLGIxtsZ-j_Jpb6jkRBwElI5s8xD6mRLSTBXqei1aCyGTAFxP73QO7g4HBKXL_");'></div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Starbucks</p>
+<span class="text-[10px] font-bold bg-orange-500/10 text-orange-500 px-2 py-0.5 rounded uppercase">Sale</span>
+</div>
+<p class="text-slate-500 dark:text-[#90a4cb] text-sm font-medium">Coffee &amp; Food</p>
+<div class="mt-4 flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="size-6 rounded-full bg-slate-800 border-2 border-[#1e293b] flex items-center justify-center text-[8px] font-bold text-white">ETH</div>
+<div class="size-6 rounded-full bg-emerald-600 border-2 border-[#1e293b] flex items-center justify-center text-[8px] font-bold text-white">USDT</div>
+</div>
+<button class="bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all px-4 py-1.5 rounded-lg text-sm font-bold">Buy</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Connected State Footer Info -->
+<footer class="mt-16 pt-8 border-t border-[#222f49] flex flex-col md:flex-row justify-between items-center gap-6 pb-12">
+<div class="flex items-center gap-4">
+<div class="p-3 bg-slate-200 dark:bg-[#1e293b] rounded-xl flex items-center gap-4">
+<div class="flex flex-col">
+<span class="text-[10px] text-[#90a4cb] font-bold uppercase tracking-wider">Your Balance</span>
+<div class="flex items-center gap-2">
+<span class="text-slate-900 dark:text-white font-black">1.245 ETH</span>
+<span class="text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded">~$2,840.12</span>
+</div>
+</div>
+<div class="w-[1px] h-8 bg-[#222f49]"></div>
+<div class="flex flex-col">
+<span class="text-[10px] text-[#90a4cb] font-bold uppercase tracking-wider">Last Transaction</span>
+<span class="text-slate-500 dark:text-slate-400 text-xs font-medium">2 hours ago (Amazon Card)</span>
+</div>
+</div>
+</div>
+<div class="flex gap-6">
+<a class="text-slate-500 dark:text-[#90a4cb] text-sm font-medium hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-500 dark:text-[#90a4cb] text-sm font-medium hover:text-white transition-colors" href="#">Support</a>
+<a class="text-slate-500 dark:text-[#90a4cb] text-sm font-medium hover:text-white transition-colors" href="#">Terms of Service</a>
+</div>
+</footer>
+</main>
+</body></html>
