@@ -16,12 +16,17 @@ export interface PolicyCheck {
 }
 
 /**
+ * Checks if policy contract is configured
+ */
+function isPolicyConfigured(): boolean {
+  return !!(process.env.POLICY_CONTRACT_ADDRESS || process.env.NEXT_PUBLIC_POLICY_CONTRACT_ADDRESS)
+}
+
+/**
  * Checks if an agent can spend the specified amount
  */
 export async function checkPolicy(agent: string, amount: bigint): Promise<PolicyCheck> {
-  const contractAddress = process.env.POLICY_CONTRACT_ADDRESS || process.env.NEXT_PUBLIC_POLICY_CONTRACT_ADDRESS
-  
-  if (!contractAddress) {
+  if (!isPolicyConfigured()) {
     console.warn('POLICY_CONTRACT_ADDRESS not set, allowing by default for demo')
     return {
       agent,
@@ -71,9 +76,7 @@ export async function checkPolicy(agent: string, amount: bigint): Promise<Policy
  * Gets the current spending limit for an agent
  */
 export async function getSpendingLimit(agent: string): Promise<bigint> {
-  const contractAddress = process.env.POLICY_CONTRACT_ADDRESS || process.env.NEXT_PUBLIC_POLICY_CONTRACT_ADDRESS
-  
-  if (!contractAddress) {
+  if (!isPolicyConfigured()) {
     return BigInt(1000000000) // 1000 USDC default for demo
   }
 

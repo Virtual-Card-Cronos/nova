@@ -33,10 +33,3 @@ export function getPolicyContract() {
     return null;
   }
 }
-
-// Export for backward compatibility - but prefer using getPolicyContract()
-export const policyContract = {
-  get instance() {
-    return getPolicyContract();
-  }
-};
