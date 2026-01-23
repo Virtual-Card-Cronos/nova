@@ -5,33 +5,82 @@
 
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useActiveAccount } from "thirdweb/react"
 import { motion } from 'framer-motion'
 
 type CatalogItem = {
   id: string
   brand: string
+  name: string
+  description?: string | null
+  price: number // in cents
+  currency: string
+  image_url?: string | null
+  inventory_count: number
   category: string
-  imageUrl?: string
   denominationRange: string
   supportedCurrencies: string[]
+}
+
+// Map brands to categories
+function getCategory(brand: string): string {
+  const brandLower = brand.toLowerCase()
+  if (['steam', 'roblox', 'xbox', 'playstation', 'nintendo'].includes(brandLower)) return 'gaming'
+  if (['amazon', 'target', 'walmart', 'best buy', 'ebay'].includes(brandLower)) return 'shopping'
+  if (['starbucks', 'doordash', 'grubhub', 'uber'].includes(brandLower)) return 'food'
+  if (['airbnb'].includes(brandLower)) return 'travel'
+  return 'other'
 }
 
 export function Storefront() {
   const account = useActiveAccount()
   const [query, setQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [items, setItems] = useState<CatalogItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const items = useMemo<CatalogItem[]>(
-    () => [
-      { id: 'amazon', brand: 'Amazon', category: 'shopping', denominationRange: '$10 - $2,000', supportedCurrencies: ['ETH', 'USDT'] },
-      { id: 'steam', brand: 'Steam', category: 'gaming', denominationRange: '$5 - $100', supportedCurrencies: ['ETH', 'POL'] },
-      { id: 'roblox', brand: 'Roblox', category: 'gaming', denominationRange: '$10 - $200', supportedCurrencies: ['ETH', 'USDC'] },
-      { id: 'starbucks', brand: 'Starbucks', category: 'food', denominationRange: '$5 - $200', supportedCurrencies: ['ETH', 'USDT'] },
-    ],
-    []
-  )
+  useEffect(() => {
+    async function fetchItems() {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/gift-cards')
+        const data = await response.json()
+        
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to fetch gift cards')
+        }
+
+        // Transform database items to CatalogItem format
+        const transformedItems: CatalogItem[] = data.items
+          .filter((item: any) => item.is_active && item.inventory_count > 0)
+          .map((item: any) => ({
+            id: item.id,
+            brand: item.brand,
+            name: item.name,
+            description: item.description,
+            price: item.price,
+            currency: item.currency,
+            image_url: item.image_url,
+            inventory_count: item.inventory_count,
+            category: getCategory(item.brand),
+            denominationRange: `$${(item.price / 100).toFixed(2)}`,
+            supportedCurrencies: ['USDC', 'CRO'],
+          }))
+
+        setItems(transformedItems)
+        console.log('[Storefront] ✅ Loaded', transformedItems.length, 'gift cards')
+      } catch (err) {
+        console.error('[Storefront] ❌ Error fetching items:', err)
+        setError(err instanceof Error ? err.message : 'Failed to load gift cards')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchItems()
+  }, [])
 
   const categories = [
     { id: 'all', label: 'All', icon: 'apps' },
@@ -134,6 +183,26 @@ export function Storefront() {
           </a>
         </div>
 
+        {loading && (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-user"></div>
+            <p className="text-slate-400 mt-4">Loading gift cards...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="text-center py-12">
+            <p className="text-red-400">Error: {error}</p>
+            <p className="text-slate-400 text-sm mt-2">Make sure your database is configured and the schema is run.</p>
+          </div>
+        )}
+
+        {!loading && !error && filtered.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-slate-400">No gift cards found. Try a different search or category.</p>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {filtered.map((item) => (
             <motion.div
@@ -142,17 +211,31 @@ export function Storefront() {
               animate={{ opacity: 1, y: 0 }}
               className="group bg-card-dark rounded-2xl overflow-hidden border border-white/5 hover:border-primary-user/50 transition-all hover:shadow-2xl hover:shadow-primary-user/10"
             >
-              <div className="w-full aspect-video bg-slate-800 flex items-center justify-center p-8">
-                <div className="text-4xl font-bold text-white opacity-50">{item.brand.charAt(0)}</div>
+              <div className="w-full aspect-video bg-slate-800 flex items-center justify-center p-8 overflow-hidden">
+                {item.image_url ? (
+                  <img 
+                    src={item.image_url} 
+                    alt={item.brand}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      // Fallback to initial if image fails
+                      const target = e.target as HTMLImageElement
+                      target.style.display = 'none'
+                      target.parentElement!.innerHTML = `<div class="text-4xl font-bold text-white opacity-50">${item.brand.charAt(0)}</div>`
+                    }}
+                  />
+                ) : (
+                  <div className="text-4xl font-bold text-white opacity-50">{item.brand.charAt(0)}</div>
+                )}
               </div>
               <div className="p-5">
                 <div className="flex justify-between items-start mb-2">
                   <p className="text-white text-lg font-bold">{item.brand}</p>
                   <span className="text-[10px] font-bold bg-green-500/10 text-green-500 px-2 py-0.5 rounded uppercase">
-                    Instant
+                    {item.inventory_count > 0 ? 'In Stock' : 'Out of Stock'}
                   </span>
                 </div>
-                <p className="text-slate-500 text-sm font-medium mb-4">Shop everything</p>
+                <p className="text-slate-500 text-sm font-medium mb-4">{item.description || item.name}</p>
                 <div className="flex items-center justify-between">
                   <div className="flex -space-x-2">
                     {item.supportedCurrencies.map((curr, idx) => (

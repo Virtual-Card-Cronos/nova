@@ -19,7 +19,7 @@ export type ChatMessage = {
     currency: string
     description: string
     metadata?: {
-      giftUpItemName?: string
+      giftCardItemName?: string
     }
   }
 }
@@ -96,8 +96,8 @@ export function ChatMessages(props: {
                       <span className="material-symbols-outlined text-white text-[20px]">sports_esports</span>
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-white">{message.purchaseIntent.metadata?.giftUpItemName || message.purchaseIntent.brand}</p>
-                      <p className="text-[10px] text-slate-400">Merchant: Gift Up!</p>
+                      <p className="text-xs font-bold text-white">{message.purchaseIntent.metadata?.giftCardItemName || message.purchaseIntent.brand}</p>
+                      <p className="text-[10px] text-slate-400">Merchant: NovaAgent</p>
                     </div>
                   </div>
                   <span className="text-white font-bold">${(parseFloat(message.purchaseIntent.amount) / 1000000).toFixed(2)}</span>

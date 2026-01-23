@@ -8,7 +8,7 @@ import { StatsFooter } from '@/components/agent/StatsFooter'
 
 export default function Home() {
   return (
-    <AppShell initialView="agent">
+    <AppShell initialView="store">
       {(view) => {
         if (view === 'store') {
           return <Storefront />
@@ -23,7 +23,7 @@ export default function Home() {
                   Web3 Gift Card <span className="text-primary">Concierge</span>
                 </h1>
                 <p className="text-slate-400 text-lg max-w-xl mx-auto">
-                  Search global inventory across Gift Up! and settle instantly on Cronos EVM with Nova-x402.
+                  Search our gift card inventory and settle instantly on Cronos EVM with Nova-x402.
                 </p>
               </div>
               

@@ -26,18 +26,20 @@ export interface AgentResponse {
   confidence: number // 0-1
 }
 
-// Gift Up! API Types
-export interface GiftUpItem {
+// Gift Card Types (database-backed)
+export interface GiftCardItem {
   id: string
   name: string
   description?: string
-  price: number
+  price: number // in cents
   currency: string
   isActive: boolean
   itemGroupId?: string
+  inventory_count?: number // Available quantity
+  brand?: string
 }
 
-export interface GiftUpOrder {
+export interface GiftCardOrder {
   id: string
   recipientEmail: string
   items: Array<{
@@ -47,7 +49,7 @@ export interface GiftUpOrder {
   externalId?: string // For mapping to our order_id
 }
 
-export interface GiftUpGiftCard {
+export interface GiftCard {
   id: string
   code: string
   balance: number

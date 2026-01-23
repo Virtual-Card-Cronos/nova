@@ -29,9 +29,19 @@ export function AppShell(props: { initialView?: AppView; children: (view: AppVie
 
           <div className="flex items-center gap-6">
             <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-              <a href="#" className="text-white">Dashboard</a>
+              <button
+                onClick={() => setView('store')}
+                className={view === 'store' ? 'text-white' : 'hover:text-white transition-colors'}
+              >
+                Storefront
+              </button>
+              <button
+                onClick={() => setView('agent')}
+                className={view === 'agent' ? 'text-white' : 'hover:text-white transition-colors'}
+              >
+                Agent
+              </button>
               <a href="#" className="hover:text-white transition-colors">History</a>
-              <a href="#" className="hover:text-white transition-colors">Gift Up! Index</a>
             </nav>
 
             <div className="flex items-center gap-4 border-l border-white/10 pl-6">

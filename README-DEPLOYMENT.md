@@ -83,7 +83,8 @@ novaagent/
    NEXT_PUBLIC_USDC_CONTRACT=0x66e428c3f67a68878562e79A0234c1F83c208770
    POLICY_CONTRACT_ADDRESS=<your-deployed-contract-address>
    NEXT_PUBLIC_FACILITATOR_BASE_URL=https://facilitator.cronoslabs.org
-   GIFTUP_API_KEY=<your-giftup-api-key>
+   NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+   SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
    CRYPTO_AI_API_KEY=<your-crypto-ai-api-key>
    CRYPTO_AI_BASE_URL=https://api.crypto.com/ai/v1
    CRYPTO_AI_MODEL=gpt-4o-mini
@@ -136,9 +137,9 @@ The project includes a `vercel.json` in the root that configures:
 - **Framework**: Foundry
 - **Contract**: `AgentPolicy.sol` (spending limits)
 
-### AI Agent Service (`services/agent`)
+### AI Agent Service (`apps/web/src/lib/agent`)
 - **SDK**: Crypto.com AI Agent SDK (with OpenAI fallback)
-- **Tools**: Gift Up! API integration, x402 trigger
+- **Tools**: Database-backed gift card integration, x402 trigger
 
 ## Troubleshooting
 

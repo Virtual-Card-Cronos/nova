@@ -1,42 +1,113 @@
 /**
  * SuggestedCards - "Suggested for You" section with gift card cards
- * Matches the design from nova-x402_agentic_dashboard
+ * Fetches from database and displays top gift cards
  */
 
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
-export function SuggestedCards() {
-  const cards = [
-    {
-      id: 'steam',
-      title: 'Steam',
-      description: 'Instantly top up your Steam Wallet with zero fees using CRO or USDC.',
+type Card = {
+  id: string
+  title: string
+  description: string
+  icon: string
+  iconBg: string
+  tag: { text: string; color: string }
+  glowColor: string
+  price: number
+  image_url?: string | null
+}
+
+// Map brands to icons and styles
+function getBrandConfig(brand: string): { icon: string; iconBg: string; tag: { text: string; color: string }; glowColor: string } {
+  const brandLower = brand.toLowerCase()
+  if (brandLower.includes('steam')) {
+    return {
       icon: 'sports_esports',
       iconBg: 'bg-[#171a21]',
-      tag: { text: '5% Cashback', color: 'bg-primary/10 text-primary' },
+      tag: { text: 'Gaming', color: 'bg-primary/10 text-primary' },
       glowColor: 'bg-primary/10',
-    },
-    {
-      id: 'amazon',
-      title: 'Amazon',
-      description: 'Shop millions of items. Redeem instantly for US, UK, and DE stores.',
+    }
+  }
+  if (brandLower.includes('amazon')) {
+    return {
       icon: 'shopping_bag',
       iconBg: 'bg-white',
       tag: { text: 'Popular', color: 'bg-white/5 text-slate-500' },
       glowColor: 'bg-orange-500/10',
-    },
-    {
-      id: 'uber',
-      title: 'Uber & Eats',
-      description: 'Get a ride or order food. Easy settlement via Cronos smart contracts.',
+    }
+  }
+  if (brandLower.includes('uber')) {
+    return {
       icon: 'directions_car',
       iconBg: 'bg-black',
       tag: { text: 'Instant', color: 'bg-emerald-500/10 text-emerald-500' },
       glowColor: 'bg-slate-500/10',
-    },
-  ]
+    }
+  }
+  return {
+    icon: 'card_giftcard',
+    iconBg: 'bg-slate-800',
+    tag: { text: 'Available', color: 'bg-primary/10 text-primary' },
+    glowColor: 'bg-primary/10',
+  }
+}
+
+export function SuggestedCards() {
+  const [cards, setCards] = useState<Card[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchCards() {
+      try {
+        const response = await fetch('/api/gift-cards')
+        const data = await response.json()
+        
+        if (data.success && data.items) {
+          // Get top 3 most popular/in-stock items
+          const topItems = data.items
+            .filter((item: any) => item.is_active && item.inventory_count > 0)
+            .slice(0, 3)
+            .map((item: any) => {
+              const config = getBrandConfig(item.brand)
+              return {
+                id: item.id,
+                title: item.brand,
+                description: item.description || `${item.name} - $${(item.price / 100).toFixed(2)}`,
+                price: item.price,
+                image_url: item.image_url,
+                ...config,
+              }
+            })
+          
+          setCards(topItems)
+          console.log('[SuggestedCards] ✅ Loaded', topItems.length, 'suggested cards')
+        }
+      } catch (error) {
+        console.error('[SuggestedCards] ❌ Error fetching cards:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchCards()
+  }, [])
+
+  if (loading) {
+    return (
+      <section className="mt-16">
+        <div className="text-center py-8">
+          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+        </div>
+      </section>
+    )
+  }
+
+  if (cards.length === 0) {
+    return null
+  }
 
   return (
     <section className="mt-16">
@@ -56,13 +127,19 @@ export function SuggestedCards() {
           >
             <div className={`absolute -right-4 -top-4 w-24 h-24 ${card.glowColor} rounded-full blur-2xl group-hover:opacity-50 transition-all`}></div>
             <div className="flex flex-col h-full">
-              <div className={`w-14 h-14 ${card.iconBg} rounded-xl flex items-center justify-center mb-6 shadow-xl border border-white/10`}>
-                <span className="material-symbols-outlined text-white text-[32px]">{card.icon}</span>
-              </div>
+              {card.image_url ? (
+                <div className="w-14 h-14 rounded-xl overflow-hidden mb-6 shadow-xl border border-white/10 flex items-center justify-center bg-slate-800">
+                  <img src={card.image_url} alt={card.title} className="w-full h-full object-contain" />
+                </div>
+              ) : (
+                <div className={`w-14 h-14 ${card.iconBg} rounded-xl flex items-center justify-center mb-6 shadow-xl border border-white/10`}>
+                  <span className="material-symbols-outlined text-white text-[32px]">{card.icon}</span>
+                </div>
+              )}
               <h3 className="text-xl font-bold mb-2 text-white">{card.title}</h3>
               <p className="text-slate-400 text-sm mb-6 flex-grow leading-relaxed">{card.description}</p>
               <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                <span className="text-primary font-bold text-sm">Buy with CRO</span>
+                <span className="text-primary font-bold text-sm">${(card.price / 100).toFixed(2)}</span>
                 <span className={`${card.tag.color} text-[10px] font-bold uppercase px-2 py-1 rounded`}>
                   {card.tag.text}
                 </span>

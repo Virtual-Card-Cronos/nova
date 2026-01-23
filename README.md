@@ -71,9 +71,10 @@ NovaAgent introduces the **Aegis Pattern**, a novel combination of AI agents and
 - HTTP 402 Payment Required protocol
 - EIP-3009 permit-based authorization
 
-### 5. **Fulfillment** - Tillo v2 API
+### 5. **Fulfillment** - Database-Backed Gift Cards
 - Instant gift card delivery
 - Multiple retailer support (Amazon, Google Play, Steam, etc.)
+- Inventory tracking with automatic decrement
 - Blockchain-verified redemption
 
 ## 🚀 Quick Start
@@ -120,7 +121,8 @@ NovaAgent introduces the **Aegis Pattern**, a novel combination of AI agents and
 NEXT_PUBLIC_CRONOS_RPC=https://evm.cronos.org
 POLICY_CONTRACT_ADDRESS=0x... # Your deployed AgentPolicy contract
 FACILITATOR_API_KEY=your_key_here
-TILLO_API_KEY=your_key_here
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 NEXT_PUBLIC_THIRDWEB_CLIENT_ID=your_client_id
 ```
 

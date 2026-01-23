@@ -1,7 +1,6 @@
 /**
  * Fulfillment API Route
- * Issues gift cards via Gift Up! API after payment confirmation
- * Based on: https://developer.giftup.com/api#introduction
+ * Issues gift cards via database after payment confirmation
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -10,17 +9,17 @@ import { issueGiftCard, getGiftCardByCode } from '@/lib/agent'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { transactionHash, giftUpItemId, recipientEmail, externalId } = body
+    const { transactionHash, giftCardItemId, recipientEmail, userAddress } = body
 
-    if (!transactionHash || !giftUpItemId || !recipientEmail) {
+    if (!transactionHash || !giftCardItemId || !recipientEmail || !userAddress) {
       return NextResponse.json(
-        { error: 'Missing required fields', required: ['transactionHash', 'giftUpItemId', 'recipientEmail'] },
+        { error: 'Missing required fields', required: ['transactionHash', 'giftCardItemId', 'recipientEmail', 'userAddress'] },
         { status: 400 }
       )
     }
 
-    // Issue gift card via Gift Up! API
-    const order = await issueGiftCard(recipientEmail, giftUpItemId, externalId || transactionHash)
+    // Issue gift card via database (decrements inventory automatically)
+    const order = await issueGiftCard(recipientEmail, giftCardItemId, userAddress, transactionHash)
 
     return NextResponse.json({
       success: true,

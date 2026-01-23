@@ -52,9 +52,8 @@ export const FACILITATOR_CONFIG = {
   retryAttempts: 3,
 } as const;
 
-// Tillo API Configuration
-export const TILLO_CONFIG = {
-  baseUrl: 'https://api.tillo.com/v2',
+// Gift Card API Configuration (database-backed)
+export const GIFT_CARD_CONFIG = {
   timeout: 30000,
   supportedCurrencies: ['USD', 'EUR', 'GBP'],
 } as const;

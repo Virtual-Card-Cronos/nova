@@ -99,7 +99,7 @@ export async function processWithAgent(
         type: 'function',
         function: {
           name: 'findCard',
-          description: 'Searches Gift Up! catalog for gift cards matching a brand name',
+          description: 'Searches gift card database for gift cards matching a brand name',
           parameters: {
             type: 'object',
             properties: {
@@ -116,7 +116,7 @@ export async function processWithAgent(
         type: 'function',
         function: {
           name: 'listAllItems',
-          description: 'Lists all available gift card items from Gift Up! catalog. Use this when users ask to see available options, search for gift cards, or browse the catalog.',
+          description: 'Lists all available gift card items from the database. Use this when users ask to see available options, search for gift cards, or browse the catalog.',
           parameters: {
             type: 'object',
             properties: {},
@@ -130,18 +130,20 @@ export async function processWithAgent(
     let requestBody: any
     let endpoint: string
     let headers: Record<string, string>
+    
+    // Convert functions to Gemini functionDeclarations format (for logging)
+    const functionDeclarations = functions.map((f: any) => ({
+      name: f.function.name,
+      description: f.function.description,
+      parameters: f.function.parameters,
+    }))
 
     if (cryptoAISDK.provider === 'gemini') {
       // Gemini API format
       const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash'
       endpoint = `${cryptoAISDK.baseURL}/models/${model}:generateContent?key=${cryptoAISDK.apiKey}`
       
-      // Convert functions to Gemini functionDeclarations format
-      const functionDeclarations = functions.map((f: any) => ({
-        name: f.function.name,
-        description: f.function.description,
-        parameters: f.function.parameters,
-      }))
+      console.log('[Agent] 🔧 Gemini functionDeclarations:', JSON.stringify(functionDeclarations, null, 2))
 
       // Build contents array (Gemini format)
       const contents: any[] = []
@@ -175,6 +177,12 @@ export async function processWithAgent(
         tools: functionDeclarations.length > 0 ? [{
           functionDeclarations,
         }] : undefined,
+        toolConfig: functionDeclarations.length > 0 ? {
+          functionCallingConfig: {
+            mode: 'AUTO', // AUTO means the model can choose to call functions
+            allowedFunctionNames: functionDeclarations.map((f: any) => f.name),
+          },
+        } : undefined,
         generationConfig: {
           temperature: 0.7,
           maxOutputTokens: 1000,
@@ -217,7 +225,11 @@ export async function processWithAgent(
 
     console.log('[Agent] 📡 Making API call to:', endpoint)
     console.log('[Agent] Provider:', cryptoAISDK.provider)
-    console.log('[Agent] Request body:', JSON.stringify(requestBody, null, 2).substring(0, 500))
+    console.log('[Agent] Request body (full):', JSON.stringify(requestBody, null, 2))
+    console.log('[Agent] Tools registered:', functionDeclarations.length, 'functions')
+    if (functionDeclarations.length > 0) {
+      console.log('[Agent] Tool names:', functionDeclarations.map((f: any) => f.name).join(', '))
+    }
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -283,6 +295,14 @@ export async function processWithAgent(
 
       console.log('[Agent] 📝 Extracted content:', content.substring(0, 100))
       console.log('[Agent] 🔧 Extracted function calls:', functionCalls.length)
+      
+      if (functionCalls.length === 0 && functionDeclarations.length > 0) {
+        console.warn('[Agent] ⚠️ WARNING: No function calls detected but tools are available!')
+        console.warn('[Agent] ⚠️ This means Gemini chose not to call any tools.')
+        console.warn('[Agent] ⚠️ Full response parts:', JSON.stringify(candidate.content.parts, null, 2))
+        console.warn('[Agent] ⚠️ User message was:', message)
+        console.warn('[Agent] ⚠️ Available tools:', functionDeclarations.map((f: any) => f.name).join(', '))
+      }
 
       aiMessage = {
         role: 'assistant',
@@ -505,7 +525,7 @@ export async function processWithAgent(
             .join('\n')
           
           return {
-            reasoning: 'User asked to see available gift cards. Retrieved catalog from Gift Up!.',
+            reasoning: 'User asked to see available gift cards. Retrieved catalog from database.',
             intent: 'query',
             message: `Here are the available gift cards:\n\n${itemsList}\n\nWould you like to purchase one? Just tell me which one!`,
             confidence: 0.9,
@@ -594,7 +614,7 @@ async function processWithFallback(
       .join('\n')
     
     return {
-      reasoning: 'User asked to see available gift cards. Retrieved catalog from Gift Up!.',
+      reasoning: 'User asked to see available gift cards. Retrieved catalog from database.',
       intent: 'query',
       message: `Here are the available gift cards${maxPrice ? ` under $${maxPrice / 100}` : ''}:\n\n${itemsList}\n\nWould you like to purchase one? Just tell me which one!`,
       confidence: 0.9,
@@ -633,11 +653,11 @@ async function processWithFallback(
     }
   }
 
-  // Find card in Gift Up!
+  // Find card in database
   const { findCard } = await import('./tools')
-  const giftUpItem = await findCard(brand)
+  const giftCardItem = await findCard(brand)
 
-  if (!giftUpItem) {
+  if (!giftCardItem) {
     return {
       reasoning: `No matching gift card found for ${brand}.`,
       intent: 'error',
@@ -647,25 +667,25 @@ async function processWithFallback(
   }
 
   // Convert price to USDC base units
-  const usdcAmount = Math.floor((giftUpItem.price / 100) * 1_000_000).toString()
+  const usdcAmount = Math.floor((giftCardItem.price / 100) * 1_000_000).toString()
 
   return {
-    reasoning: `Found ${giftUpItem.name} for $${(giftUpItem.price / 100).toFixed(2)}. Converting to USDC and preparing x402 challenge.`,
+    reasoning: `Found ${giftCardItem.name} for $${(giftCardItem.price / 100).toFixed(2)}. Converting to USDC and preparing x402 challenge.`,
     intent: 'purchase',
     purchaseIntent: {
-      brand: giftUpItem.name,
+      brand: giftCardItem.name,
       amount: usdcAmount,
       currency: 'USDC',
-      description: `${giftUpItem.name} - $${(giftUpItem.price / 100).toFixed(2)} ${giftUpItem.currency}`,
+      description: `${giftCardItem.name} - $${(giftCardItem.price / 100).toFixed(2)} ${giftCardItem.currency}`,
       metadata: {
-        giftUpItemId: giftUpItem.id,
-        giftUpItemName: giftUpItem.name,
-        giftUpPrice: giftUpItem.price,
-        giftUpCurrency: giftUpItem.currency,
+        giftCardItemId: giftCardItem.id,
+        giftCardItemName: giftCardItem.name,
+        giftCardPrice: giftCardItem.price,
+        giftCardCurrency: giftCardItem.currency,
         requestedBy: userAddress,
       },
     },
-    message: `Perfect! I found a ${giftUpItem.name} for $${(giftUpItem.price / 100).toFixed(2)}. I'll verify your policy on-chain, then request an x402 payment authorization.`,
+    message: `Perfect! I found a ${giftCardItem.name} for $${(giftCardItem.price / 100).toFixed(2)}. I'll verify your policy on-chain, then request an x402 payment authorization.`,
     confidence: 0.95,
   }
 }

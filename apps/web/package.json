@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@crypto.com/facilitator-client": "^1.0.4",
+    "@supabase/supabase-js": "^2.91.0",
     "ethers": "^6.16.0",
     "framer-motion": "^11",
     "lucide-react": "^0.469.0",

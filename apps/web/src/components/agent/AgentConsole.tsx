@@ -77,8 +77,8 @@ export function AgentConsole() {
       let purchaseMessage: ChatMessage | null = null
       if (agentResponse.intent === 'purchase' && agentResponse.purchaseIntent) {
         const amount = parseFloat(agentResponse.purchaseIntent.amount) / 1000000
-        const brandName = agentResponse.purchaseIntent.metadata?.giftUpItemName || agentResponse.purchaseIntent.brand
-        const messageContent = `Searching Gift Up! inventory for ${agentResponse.purchaseIntent.brand} cards...\n\nFound a **$${amount.toFixed(2)} ${brandName}** (Digital Code).\nSettlement amount: **${amount.toFixed(2)} USDC** + Gas.\n\nWould you like to authorize this x402 settlement on Cronos?`
+        const brandName = agentResponse.purchaseIntent.metadata?.giftCardItemName || agentResponse.purchaseIntent.brand
+        const messageContent = `Searching inventory for ${agentResponse.purchaseIntent.brand} cards...\n\nFound a **$${amount.toFixed(2)} ${brandName}** (Digital Code).\nSettlement amount: **${amount.toFixed(2)} USDC** + Gas.\n\nWould you like to authorize this x402 settlement on Cronos?`
         
         purchaseMessage = {
           id: crypto.randomUUID(),
