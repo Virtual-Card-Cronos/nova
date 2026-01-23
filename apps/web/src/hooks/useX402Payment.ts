@@ -2,6 +2,13 @@
  * useX402Payment Hook - Handles x402 Protocol Payment Flow
  * Manages 402 responses, wallet signatures, and facilitator submission
  * Updated for thirdweb v5
+ * 
+ * Flow:
+ * 1. User requests purchase -> receive 402 challenge
+ * 2. Prepare EIP-712 typed data for signing
+ * 3. User signs with wallet (client-side)
+ * 4. Build payment header from signature (server-side)
+ * 5. Submit to facilitator for verification and settlement
  */
 
 'use client'
@@ -9,7 +16,6 @@
 import { useState, useCallback } from 'react'
 import { useActiveAccount, useActiveWalletChain } from "thirdweb/react"
 import { PurchaseIntent, X402Challenge } from '@/lib/types'
-import { createEthersSignerAdapter } from '@/lib/ethers-adapter'
 
 interface PaymentState {
   status: 'idle' | 'requesting' | 'signing' | 'submitting' | 'confirming' | 'completed' | 'failed'
@@ -122,8 +128,13 @@ export function useX402Payment(): UseX402PaymentReturn {
   }, [account])
 
   /**
-   * Signs and submits the payment using SDK's generatePaymentHeader
-   * Uses ethers signer adapter to bridge thirdweb account with facilitator SDK
+   * Signs and submits the payment using EIP-3009 TransferWithAuthorization
+   * 
+   * Flow:
+   * 1. Get EIP-712 typed data from server (prepare-signing-data)
+   * 2. Sign the typed data with user's wallet (client-side)
+   * 3. Build payment header from signature (build-header)
+   * 4. Submit to facilitator for verification and settlement
    */
   const confirmPayment = useCallback(async (agentSignature?: string) => {
     if (!account || !paymentState.challenge || !chain) {
@@ -139,44 +150,80 @@ export function useX402Payment(): UseX402PaymentReturn {
     try {
       const { challenge } = paymentState
       const chainId = chain.id
-      const rpcUrl = process.env.NEXT_PUBLIC_CRONOS_RPC
       
-      // Create ethers signer adapter from thirdweb account
-      const signer = createEthersSignerAdapter(account, chainId, rpcUrl)
+      console.log('[Payment] 🔐 Starting EIP-3009 signing flow...')
+      console.log('[Payment] Chain ID:', chainId)
+      console.log('[Payment] Recipient:', challenge.resource.recipient)
+      console.log('[Payment] Amount:', challenge.resource.amount)
       
-      // Generate payment header via API route (server-side)
-      // The facilitator SDK uses Node.js crypto which can't be bundled client-side
-      const headerResponse = await fetch('/api/payment/generate-header', {
+      // Step 1: Get the EIP-712 typed data to sign
+      const prepareResponse = await fetch('/api/payment/prepare-signing-data', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          from: account.address,
           to: challenge.resource.recipient,
           value: challenge.resource.amount,
-          // We can't pass the signer object, so we'll need to sign client-side
-          // For now, let's use a workaround: sign the message client-side and send the signature
-          accountAddress: account.address,
-          chainId: chainId,
+          chainId,
         }),
       })
 
-      if (!headerResponse.ok) {
-        // Fallback: try to generate header client-side if API fails
-        // This will fail at build time but might work if we can exclude facilitator-client from client bundle
-        throw new Error('Payment header generation requires server-side API. Please ensure /api/payment/generate-header is available.')
+      if (!prepareResponse.ok) {
+        const error = await prepareResponse.json()
+        throw new Error(error.error || 'Failed to prepare signing data')
       }
 
-      const { paymentHeader } = await headerResponse.json()
+      const { domain, types, message, primaryType } = await prepareResponse.json()
+      console.log('[Payment] 📋 Prepared typed data for signing')
+      console.log('[Payment] Domain:', domain)
+      console.log('[Payment] Message:', message)
 
+      // Step 2: Sign the typed data with user's wallet
+      console.log('[Payment] ✍️ Requesting wallet signature...')
+      const signature = await account.signTypedData({
+        domain: {
+          name: domain.name,
+          version: domain.version,
+          chainId: BigInt(domain.chainId),
+          verifyingContract: domain.verifyingContract as `0x${string}`,
+        },
+        types,
+        primaryType,
+        message,
+      })
+      console.log('[Payment] ✅ Signature received:', signature.substring(0, 20) + '...')
+
+      // Step 3: Build payment header from signature
       setPaymentState(prev => ({ ...prev, status: 'submitting' }))
+      
+      const buildResponse = await fetch('/api/payment/build-header', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: account.address,
+          to: challenge.resource.recipient,
+          value: challenge.resource.amount,
+          validAfter: message.validAfter,
+          validBefore: message.validBefore,
+          nonce: message.nonce,
+          signature,
+          chainId,
+        }),
+      })
 
-      // Submit to facilitator API
+      if (!buildResponse.ok) {
+        const error = await buildResponse.json()
+        throw new Error(error.error || 'Failed to build payment header')
+      }
+
+      const { paymentHeader } = await buildResponse.json()
+      console.log('[Payment] 📦 Payment header built successfully')
+
+      // Step 4: Submit to facilitator API
+      console.log('[Payment] 📤 Submitting to facilitator...')
       const submitResponse = await fetch('/api/facilitator/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           challenge,
           signature: paymentHeader,
@@ -191,6 +238,7 @@ export function useX402Payment(): UseX402PaymentReturn {
       }
 
       const result = await submitResponse.json()
+      console.log('[Payment] ✅ Facilitator response:', result)
       
       if (result.transactionHash) {
         setPaymentState({
@@ -206,7 +254,7 @@ export function useX402Payment(): UseX402PaymentReturn {
         })
       }
     } catch (error) {
-      console.error('Payment confirmation failed:', error)
+      console.error('[Payment] ❌ Payment confirmation failed:', error)
       setPaymentState(prev => ({
         ...prev,
         status: 'failed',
