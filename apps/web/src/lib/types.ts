@@ -25,7 +25,7 @@ export interface PurchaseIntent {
   amount: string
   currency: 'USDC'
   description: string
-  recipient: string
+  recipient?: string  // Optional - defaults to merchant address on server
   metadata?: Record<string, unknown>
 }
 
