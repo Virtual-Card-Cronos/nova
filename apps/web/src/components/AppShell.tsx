@@ -28,6 +28,7 @@ export function AppShell(props: { initialView?: AppView; children: (view: AppVie
               width={32}
               height={32}
               className="rounded-lg"
+              priority
             />
             <h2 className="text-xl font-extrabold tracking-tight text-white">Nova-x402</h2>
           </div>
