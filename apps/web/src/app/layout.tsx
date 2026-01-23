@@ -5,6 +5,11 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'NovaAgent - AI Shopping Concierge',
   description: 'Experience the future of shopping with AI agents and blockchain security',
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
 }
 
 export default function RootLayout({
