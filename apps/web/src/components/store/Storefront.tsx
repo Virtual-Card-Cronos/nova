@@ -121,7 +121,8 @@ export function Storefront() {
       amount: usdcAmount,
       currency: 'USDC',
       description: `${item.name} - $${(item.price / 100).toFixed(2)} ${item.currency}`,
-      recipient: process.env.NEXT_PUBLIC_FACILITATOR_ADDRESS || account.address,
+      // Recipient will be set by the API to facilitator address
+      recipient: '', // Will be determined server-side
       metadata: {
         giftCardItemId: item.id,
         giftCardItemName: item.name,

@@ -99,7 +99,8 @@ export function AgentConsole() {
           amount: agentResponse.purchaseIntent.amount,
           currency: agentResponse.purchaseIntent.currency,
           description: agentResponse.purchaseIntent.description,
-          recipient: process.env.NEXT_PUBLIC_FACILITATOR_ADDRESS || account.address,
+          // Recipient will be set by the API to facilitator address
+          recipient: '', // Will be determined server-side
           metadata: {
             ...agentResponse.purchaseIntent.metadata,
             brand: agentResponse.purchaseIntent.brand,

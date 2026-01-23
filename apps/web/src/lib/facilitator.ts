@@ -34,7 +34,7 @@ async function getFacilitatorClient() {
     
     facilitatorClient = new Fac({
       network,
-      baseUrl: process.env.NEXT_PUBLIC_FACILITATOR_BASE_URL || 'https://facilitator.crypto.com',
+      baseUrl: process.env.NEXT_PUBLIC_FACILITATOR_BASE_URL || 'https://facilitator.cronoslabs.org/v2/x402',
     })
   }
   return facilitatorClient
@@ -48,15 +48,54 @@ export interface PurchaseResponse {
 }
 
 /**
+ * Gets the merchant/seller recipient address (payTo)
+ * For x402 payments, the recipient (payTo) should be the merchant/seller address that will receive the payment
+ * The facilitator is just the service that processes the payment, not the recipient
+ */
+function getMerchantRecipientAddress(): string {
+  // Check if explicitly set in environment
+  const envAddress = process.env.NEXT_PUBLIC_MERCHANT_ADDRESS || 
+                     process.env.MERCHANT_ADDRESS ||
+                     process.env.NEXT_PUBLIC_FACILITATOR_ADDRESS || // Legacy support
+                     process.env.FACILITATOR_ADDRESS // Legacy support
+  
+  if (envAddress && envAddress.startsWith('0x') && envAddress.length === 42) {
+    return envAddress
+  }
+
+  // If not set, throw an error to force configuration
+  throw new Error(
+    'Merchant recipient address not configured. ' +
+    'Set NEXT_PUBLIC_MERCHANT_ADDRESS in your .env.local with the address that should receive payments. ' +
+    'This is your platform/merchant address, not the facilitator address. ' +
+    'The facilitator is just the service that processes payments.'
+  )
+}
+
+/**
  * Creates an x402 challenge for payment authorization
+ * @param amount - Amount in base units (6 decimals for USDC.e)
+ * @param description - Payment description
+ * @param recipient - Optional recipient address (defaults to merchant address)
+ * @param network - Network string ('cronos-testnet' or 'cronos')
  */
 export async function createX402Challenge(
   amount: string,
   description: string,
-  recipient: string,
+  recipient?: string,
   network: string = 'cronos-testnet'
 ): Promise<X402Challenge> {
-  const facilitatorUrl = process.env.NEXT_PUBLIC_FACILITATOR_BASE_URL || 'https://facilitator.crypto.com'
+  const facilitatorUrl = process.env.NEXT_PUBLIC_FACILITATOR_BASE_URL || 'https://facilitator.cronoslabs.org/v2/x402'
+  
+  // Determine recipient address (payTo)
+  // This should be the merchant/seller address that receives the payment
+  let recipientAddress: string
+  if (recipient && recipient.startsWith('0x') && recipient.length === 42) {
+    recipientAddress = recipient
+  } else {
+    // Use merchant address (the seller who receives the payment)
+    recipientAddress = getMerchantRecipientAddress()
+  }
   
   const challenge: X402Challenge = {
     scheme: 'x402',
@@ -65,7 +104,7 @@ export async function createX402Challenge(
       type: 'payment',
       amount,
       currency: 'USDC',
-      recipient: recipient as `0x${string}`,
+      recipient: recipientAddress as `0x${string}`,
       description,
       facilitatorUrl,
     },
@@ -126,10 +165,18 @@ export async function submitPaymentRequest(
     const { challenge } = request
     
     // Generate payment requirements from challenge
+    // payTo is the merchant/seller address (recipient in challenge)
+    // asset should be USDC.e contract address for the network
+    const network = challenge.network === 'cronos' ? 'cronos' : 'cronos-testnet'
+    const usdcContract = network === 'cronos-testnet' 
+      ? '0xc01efAaF7C5C61bEbFAeb358E1161b537b8bC0e0' // Testnet USDC.e
+      : '0xf951eC28187D9E5Ca673Da8FE6757E6f0Be5F77C' // Mainnet USDC.e
+    
     const requirements = facilitator.generatePaymentRequirements({
-      payTo: challenge.resource.recipient,
+      payTo: challenge.resource.recipient, // Merchant/seller address
       description: challenge.resource.description,
       maxAmountRequired: challenge.resource.amount,
+      asset: usdcContract, // USDC.e contract address
     })
     
     // Build verify request with the signature (payment header)

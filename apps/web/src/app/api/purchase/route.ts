@@ -112,13 +112,20 @@ export async function POST(request: NextRequest) {
     console.log('[Purchase API] ✅ Policy approved, creating x402 challenge...')
     let challenge
     try {
+      // Use facilitator address as recipient (not user's address)
+      // If recipient was provided and is valid, use it; otherwise get facilitator address
+      const facilitatorRecipient = recipient && recipient.startsWith('0x') && recipient.length === 42 
+        ? recipient 
+        : undefined // Let createX402Challenge get facilitator address
+      
       challenge = await createX402Challenge(
         amount.toString(),
         description,
-        recipient,
+        facilitatorRecipient,
         'cronos-testnet' // Cronos Testnet
       )
       console.log('[Purchase API] ✅ Challenge created successfully')
+      console.log('[Purchase API] 📍 Facilitator recipient:', challenge.resource.recipient)
     } catch (error) {
       console.error('[Purchase API] ❌ Failed to create challenge:', error)
       return NextResponse.json(
