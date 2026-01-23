@@ -5,7 +5,7 @@
  */
 
 import { readContract } from "thirdweb"
-import  { policyContract } from "@/app/contract"
+import { getPolicyContract } from "@/app/contract"
 // Policy check result
 export interface PolicyCheck {
   agent: string
@@ -31,9 +31,10 @@ export async function checkPolicy(agent: string, amount: bigint): Promise<Policy
   }
 
   try {
+    // Use string method signature for type-safe calls
     const approved = await readContract({
-      contract: policyContract,
-      method: "checkPolicy",
+      contract: getPolicyContract(),
+      method: "function checkPolicy(address agent, uint256 amount) view returns (bool)",
       params: [agent as `0x${string}`, amount],
     })
 
@@ -66,9 +67,10 @@ export async function getSpendingLimit(agent: string): Promise<bigint> {
   }
 
   try {
+    // Use string method signature for type-safe calls
     const limit = await readContract({
-      contract: policyContract,
-      method: "getSpendingLimit",
+      contract: getPolicyContract(),
+      method: "function getSpendingLimit(address agent) view returns (uint256)",
       params: [agent as `0x${string}`],
     })
 

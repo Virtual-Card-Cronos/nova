@@ -8,10 +8,10 @@ import { GiftCard } from '@/lib/agent/types'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: Promise<{ code: string }> }
 ) {
   try {
-    const code = params.code
+    const { code } = await params
 
     if (!code) {
       return NextResponse.json(
