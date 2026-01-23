@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     const { agentId, amount, currency, description, recipient } = body
     console.log('[Purchase API] 📋 Request details:', { agentId, amount, currency, description: description.substring(0, 50) })
 
-    // Validate required fields (recipient is optional - defaults to merchant address)
+    // Validate required fields (recipient is optional - will default to merchant address)
     if (!agentId || !amount || !currency || !description) {
       return NextResponse.json(
         { error: 'Missing required fields', required: ['agentId', 'amount', 'currency', 'description'] },
@@ -80,8 +80,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate recipient address if provided (optional - will default to merchant address)
-    if (recipient && recipient.length > 0 && (!recipient.startsWith('0x') || recipient.length !== 42)) {
+    // Validate recipient address if provided (optional - defaults to merchant address)
+    const isRecipientInvalid = recipient && 
+      typeof recipient === 'string' && 
+      recipient.length > 0 && 
+      (!recipient.startsWith('0x') || recipient.length !== 42)
+    
+    if (isRecipientInvalid) {
       return NextResponse.json(
         { error: 'Invalid recipient address format' },
         { status: HTTP_STATUS.BAD_REQUEST }
