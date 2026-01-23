@@ -8,6 +8,9 @@
 import { useMemo, useState, useEffect } from 'react'
 import { useActiveAccount } from "thirdweb/react"
 import { motion } from 'framer-motion'
+import { useX402Payment } from '@/hooks/useX402Payment'
+import { PaymentBanner } from '@/components/agent/PaymentBanner'
+import type { PurchaseIntent } from '@/lib/types'
 
 type CatalogItem = {
   id: string
@@ -40,6 +43,8 @@ export function Storefront() {
   const [items, setItems] = useState<CatalogItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedItem, setSelectedItem] = useState<CatalogItem | null>(null)
+  const { paymentState, initiatePayment, confirmPayment, resetPayment } = useX402Payment()
 
   useEffect(() => {
     async function fetchItems() {
@@ -81,6 +86,106 @@ export function Storefront() {
 
     fetchItems()
   }, [])
+
+  // Handle fulfillment after payment completes
+  useEffect(() => {
+    if (paymentState.status === 'completed' && paymentState.transactionHash && selectedItem) {
+      handleFulfillment(selectedItem, paymentState.transactionHash)
+    }
+  }, [paymentState.status, paymentState.transactionHash, selectedItem])
+
+  async function handlePurchase(item: CatalogItem) {
+    if (!account) return
+
+    setSelectedItem(item)
+    
+    // Convert price to USDC base units (6 decimals)
+    const usdcAmount = Math.floor((item.price / 100) * 1_000_000).toString()
+    
+    const intent: PurchaseIntent = {
+      agentId: account.address,
+      amount: usdcAmount,
+      currency: 'USDC',
+      description: `${item.name} - $${(item.price / 100).toFixed(2)} ${item.currency}`,
+      recipient: process.env.NEXT_PUBLIC_FACILITATOR_ADDRESS || account.address,
+      metadata: {
+        giftCardItemId: item.id,
+        giftCardItemName: item.name,
+        giftCardPrice: item.price,
+        giftCardCurrency: item.currency,
+        brand: item.brand,
+        requestedBy: account.address,
+      },
+    }
+
+    await initiatePayment(intent)
+  }
+
+  async function handleFulfillment(item: CatalogItem, transactionHash: string) {
+    if (!account) return
+
+    try {
+      // Prompt for email
+      const email = prompt('Enter recipient email for gift card delivery:')
+      if (!email) {
+        alert('Email is required for gift card delivery')
+        resetPayment()
+        setSelectedItem(null)
+        return
+      }
+
+      const response = await fetch('/api/fulfillment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          transactionHash,
+          giftCardItemId: item.id,
+          recipientEmail: email,
+          userAddress: account.address,
+        }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Fulfillment failed')
+      }
+
+      const result = await response.json()
+      alert(`✅ Gift card issued successfully! Order ID: ${result.orderId}`)
+      
+      // Refresh items to update inventory
+      const refreshResponse = await fetch('/api/gift-cards')
+      const refreshData = await refreshResponse.json()
+      if (refreshData.success) {
+        const transformedItems: CatalogItem[] = refreshData.items
+          .filter((i: any) => i.is_active && i.inventory_count > 0)
+          .map((i: any) => ({
+            id: i.id,
+            brand: i.brand,
+            name: i.name,
+            description: i.description,
+            price: i.price,
+            currency: i.currency,
+            image_url: i.image_url,
+            inventory_count: i.inventory_count,
+            category: getCategory(i.brand),
+            denominationRange: `$${(i.price / 100).toFixed(2)}`,
+            supportedCurrencies: ['USDC', 'CRO'],
+          }))
+        setItems(transformedItems)
+      }
+
+      resetPayment()
+      setSelectedItem(null)
+    } catch (error) {
+      console.error('Fulfillment error:', error)
+      alert(`Failed to issue gift card: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      resetPayment()
+      setSelectedItem(null)
+    }
+  }
 
   const categories = [
     { id: 'all', label: 'All', icon: 'apps' },
@@ -249,11 +354,11 @@ export function Storefront() {
                   </div>
                   <button
                     type="button"
-                    disabled={!account}
-                    onClick={() => alert('Manual checkout coming soon')}
+                    disabled={!account || item.inventory_count === 0 || paymentState.status !== 'idle'}
+                    onClick={() => handlePurchase(item)}
                     className="bg-primary-user/10 hover:bg-primary-user text-primary-user hover:text-white transition-all px-4 py-1.5 rounded-lg text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Buy
+                    {paymentState.status === 'idle' ? 'Buy' : 'Processing...'}
                   </button>
                 </div>
                 <div className="mt-3 text-xs text-slate-400">{item.denominationRange}</div>
@@ -262,6 +367,24 @@ export function Storefront() {
           ))}
         </div>
       </section>
+
+      {/* Payment Banner */}
+      {paymentState.status !== 'idle' && (
+        <div className="mt-8">
+          <PaymentBanner
+            state={
+              paymentState.status === 'failed'
+                ? { status: 'failed', challenge: paymentState.challenge, error: paymentState.error }
+                : { status: paymentState.status, challenge: paymentState.challenge }
+            }
+            onSignAndPay={() => confirmPayment('')}
+            onReset={() => {
+              resetPayment()
+              setSelectedItem(null)
+            }}
+          />
+        </div>
+      )}
     </div>
   )
 }
