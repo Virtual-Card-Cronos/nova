@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     }
     
     const { agentId, amount, currency, description, recipient } = body
-    console.log('[Purchase API] 📋 Request details:', { agentId, amount, currency, description: description.substring(0, 50) })
+    console.log('[Purchase API] 📋 Request details:', { agentId, amount, currency, description: description?.substring(0, 50) })
 
     // Validate required fields (recipient is optional - will default to merchant address)
     if (!agentId || !amount || !currency || !description) {
