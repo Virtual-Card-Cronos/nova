@@ -9,7 +9,8 @@ import { useEffect, useState } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { Order, GiftCard, GiftCardItem } from '@/lib/db/supabase'
 
-interface OrderWithDetails extends Order {
+interface OrderWithDetails {
+  order: Order
   items: Array<{
     id: string
     order_id: string
