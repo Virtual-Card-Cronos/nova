@@ -9,7 +9,8 @@ import { useEffect, useState } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { Order, GiftCard, GiftCardItem } from '@/lib/db/supabase'
 
-interface OrderWithDetails extends Order {
+interface OrderWithDetails {
+  order: Order
   items: Array<{
     id: string
     order_id: string
@@ -34,10 +35,12 @@ export function PurchaseHistory() {
       return
     }
 
+    const userAddress = account.address
+    
     async function fetchOrders() {
       try {
         setLoading(true)
-        const response = await fetch(`/api/orders?userAddress=${account.address}`)
+        const response = await fetch(`/api/orders?userAddress=${userAddress}`)
         
         if (!response.ok) {
           throw new Error('Failed to fetch orders')
