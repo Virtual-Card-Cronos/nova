@@ -272,6 +272,87 @@ export async function getGiftCardByCode(code: string): Promise<GiftCard | null> 
 }
 
 /**
+ * Get orders by user address (wallet address)
+ */
+export async function getOrdersByUserAddress(userAddress: string): Promise<Order[]> {
+  if (!supabase) {
+    throw new Error('Database not configured')
+  }
+
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*')
+    .eq('user_address', userAddress)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('[DB] ❌ Error fetching orders:', error)
+    throw error
+  }
+
+  return data || []
+}
+
+/**
+ * Get order with items and gift cards
+ */
+export async function getOrderWithDetails(orderId: string): Promise<{
+  order: Order
+  items: Array<OrderItem & { gift_card_item: GiftCardItem }>
+  gift_cards: GiftCard[]
+} | null> {
+  if (!supabase) {
+    throw new Error('Database not configured')
+  }
+
+  // Get order
+  const { data: order, error: orderError } = await supabase
+    .from('orders')
+    .select('*')
+    .eq('id', orderId)
+    .single()
+
+  if (orderError || !order) {
+    console.error('[DB] ❌ Error fetching order:', orderError)
+    return null
+  }
+
+  // Get order items with gift card item details
+  const { data: orderItems, error: itemsError } = await supabase
+    .from('order_items')
+    .select(`
+      *,
+      gift_card_item:gift_card_items(*)
+    `)
+    .eq('order_id', orderId)
+
+  if (itemsError) {
+    console.error('[DB] ❌ Error fetching order items:', itemsError)
+    throw itemsError
+  }
+
+  // Get gift cards for this order
+  const { data: giftCards, error: cardsError } = await supabase
+    .from('gift_cards')
+    .select('*')
+    .eq('order_id', orderId)
+
+  if (cardsError) {
+    console.error('[DB] ❌ Error fetching gift cards:', cardsError)
+    throw cardsError
+  }
+
+  return {
+    order,
+    items: (orderItems || []).map((item: any) => ({
+      ...item,
+      gift_card_item: item.gift_card_item,
+    })),
+    gift_cards: giftCards || [],
+  }
+}
+
+/**
  * Generate a unique gift card code
  */
 function generateGiftCardCode(): string {

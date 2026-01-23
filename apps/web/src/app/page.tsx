@@ -5,6 +5,7 @@ import { Storefront } from '@/components/store/Storefront'
 import { AgentConsole } from '@/components/agent/AgentConsole'
 import { SuggestedCards } from '@/components/agent/SuggestedCards'
 import { StatsFooter } from '@/components/agent/StatsFooter'
+import { PurchaseHistory } from '@/components/history/PurchaseHistory'
 
 export default function Home() {
   return (
@@ -12,6 +13,10 @@ export default function Home() {
       {(view) => {
         if (view === 'store') {
           return <Storefront />
+        }
+        
+        if (view === 'history') {
+          return <PurchaseHistory />
         }
         
         return (

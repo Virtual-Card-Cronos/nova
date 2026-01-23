@@ -9,7 +9,7 @@ import { useState } from 'react'
 import { ConnectWallet } from '@/components/ConnectWallet'
 import { useActiveAccount } from "thirdweb/react"
 
-export type AppView = 'store' | 'agent'
+export type AppView = 'store' | 'agent' | 'history'
 
 export function AppShell(props: { initialView?: AppView; children: (view: AppView) => React.ReactNode }) {
   const account = useActiveAccount()
@@ -41,7 +41,12 @@ export function AppShell(props: { initialView?: AppView; children: (view: AppVie
               >
                 Agent
               </button>
-              <a href="#" className="hover:text-white transition-colors">History</a>
+              <button
+                onClick={() => setView('history')}
+                className={view === 'history' ? 'text-white' : 'hover:text-white transition-colors'}
+              >
+                History
+              </button>
             </nav>
 
             <div className="flex items-center gap-4 border-l border-white/10 pl-6">
