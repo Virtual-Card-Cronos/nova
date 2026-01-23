@@ -10,6 +10,10 @@ const PLACEHOLDER_ADDRESS = "0x0000000000000000000000000000000000000000" as `0x$
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let policyContractInstance: any = null;
 
+/**
+ * Get the policy contract instance with lazy initialization.
+ * This is necessary because the environment variable may not be available at build time.
+ */
 export function getPolicyContract() {
   if (policyContractInstance) {
     return policyContractInstance;
@@ -26,6 +30,3 @@ export function getPolicyContract() {
   
   return policyContractInstance;
 }
-
-// For backwards compatibility - use getPolicyContract() for runtime access
-export const policyContract = getPolicyContract;
