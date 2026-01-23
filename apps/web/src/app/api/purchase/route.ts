@@ -40,12 +40,11 @@ export async function POST(request: NextRequest) {
     }
     
     const { agentId, amount, currency, description, recipient } = body
-    console.log('[Purchase API] 📋 Request details:', { agentId, amount, currency, description: description.substring(0, 50) })
-
-    // Validate required fields
-    if (!agentId || !amount || !currency || !description || !recipient) {
+    console.log('[Purchase API] 📋 Request details:', { agentId, amount, currency, description: description.substring(0, 50), recipient })
+    // Validate required fields (recipient is optional - will be determined server-side)
+    if (!agentId || !amount || !currency || !description) {
       return NextResponse.json(
-        { error: 'Missing required fields', required: ['agentId', 'amount', 'currency', 'description', 'recipient'] },
+        { error: 'Missing required fields', required: ['agentId', 'amount', 'currency', 'description'] },
         { status: HTTP_STATUS.BAD_REQUEST }
       )
     }
@@ -80,8 +79,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate recipient address
-    if (!recipient.startsWith('0x') || recipient.length !== 42) {
+    // Validate recipient address (only if provided - empty string means server will determine it)
+    if (recipient && recipient !== '' && (!recipient.startsWith('0x') || recipient.length !== 42)) {
       return NextResponse.json(
         { error: 'Invalid recipient address format' },
         { status: HTTP_STATUS.BAD_REQUEST }
@@ -112,20 +111,25 @@ export async function POST(request: NextRequest) {
     console.log('[Purchase API] ✅ Policy approved, creating x402 challenge...')
     let challenge
     try {
-      // Use facilitator address as recipient (not user's address)
-      // If recipient was provided and is valid, use it; otherwise get facilitator address
-      const facilitatorRecipient = recipient && recipient.startsWith('0x') && recipient.length === 42 
+      // If recipient was provided and is valid, use it; otherwise let server determine merchant address
+      const providedRecipient = recipient && recipient !== '' && recipient.startsWith('0x') && recipient.length === 42 
         ? recipient 
-        : undefined // Let createX402Challenge get facilitator address
+        : undefined // Let createX402Challenge get merchant address from env
+      
+      if (providedRecipient) {
+        console.log('[Purchase API] 📍 Using provided recipient:', providedRecipient)
+      } else {
+        console.log('[Purchase API] 📍 No recipient provided, using merchant address from environment')
+      }
       
       challenge = await createX402Challenge(
         amount.toString(),
         description,
-        facilitatorRecipient,
+        providedRecipient ,
         'cronos-testnet' // Cronos Testnet
       )
       console.log('[Purchase API] ✅ Challenge created successfully')
-      console.log('[Purchase API] 📍 Facilitator recipient:', challenge.resource.recipient)
+      console.log('[Purchase API] 📍 Final merchant recipient address:', challenge.resource.recipient)
     } catch (error) {
       console.error('[Purchase API] ❌ Failed to create challenge:', error)
       return NextResponse.json(

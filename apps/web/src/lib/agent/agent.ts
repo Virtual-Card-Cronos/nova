@@ -116,7 +116,7 @@ export async function processWithAgent(
         type: 'function',
         function: {
           name: 'listAllItems',
-          description: 'Lists all available gift card items from the database. Use this when users ask to see available options, search for gift cards, or browse the catalog.',
+          description: 'Lists all available gift card items from the database with their prices, brands, and inventory. Use this when users ask to: see available options, search for gift cards, browse the catalog, find items by price (e.g., "at least $50", "under $20"), count available brands, or list all options. The function returns an array of items with price (in cents), brand, name, and inventory_count. You can filter and analyze these results to answer price-related queries.',
           parameters: {
             type: 'object',
             properties: {},
@@ -179,7 +179,7 @@ export async function processWithAgent(
         }] : undefined,
         toolConfig: functionDeclarations.length > 0 ? {
           functionCallingConfig: {
-            mode: 'AUTO', // AUTO means the model can choose to call functions
+            mode: 'ANY', // ANY forces the model to call at least one function
             allowedFunctionNames: functionDeclarations.map((f: any) => f.name),
           },
         } : undefined,
@@ -243,6 +243,35 @@ export async function processWithAgent(
       const errorText = await response.text()
       console.error('[Agent] ❌ API Error:', response.status, errorText)
       
+      // Handle rate limiting - try OpenAI fallback or gracefully degrade
+      if (response.status === 429) {
+        console.warn('[Agent] ⚠️ Rate limit exceeded (429)')
+        try {
+          const errorData = JSON.parse(errorText)
+          const retryInfo = errorData.error?.details?.find((d: any) => d['@type'] === 'type.googleapis.com/google.rpc.RetryInfo')
+          if (retryInfo?.retryDelay) {
+            console.warn(`[Agent] ⚠️ Retry after: ${retryInfo.retryDelay}`)
+          }
+        } catch {
+          // Ignore parse errors
+        }
+        
+        // Try OpenAI as fallback if available
+        if (cryptoAISDK.baseURL !== 'https://api.openai.com/v1') {
+          const openAIKey = process.env.OPENAI_API_KEY
+          if (openAIKey) {
+            console.log('[Agent] 🔄 Falling back to OpenAI API due to Gemini rate limit...')
+            cryptoAISDK.baseURL = 'https://api.openai.com/v1'
+            cryptoAISDK.apiKey = openAIKey
+            cryptoAISDK.provider = 'openai'
+            return processWithAgent(message, userAddress, previousMessages)
+          }
+        }
+        
+        // If no OpenAI fallback, throw to trigger rule-based processing
+        throw new Error('RATE_LIMIT_EXCEEDED')
+      }
+      
       // If Crypto.com AI endpoint fails and we're not using OpenAI, try OpenAI as fallback
       if (cryptoAISDK.baseURL !== 'https://api.openai.com/v1' && 
           (response.status === 404 || response.status === 400)) {
@@ -252,6 +281,7 @@ export async function processWithAgent(
           console.log('[Agent] 🔄 Retrying with OpenAI API...')
           cryptoAISDK.baseURL = 'https://api.openai.com/v1'
           cryptoAISDK.apiKey = openAIKey
+          cryptoAISDK.provider = 'openai'
           // Retry the request with OpenAI
           return processWithAgent(message, userAddress, previousMessages)
         }
@@ -268,16 +298,28 @@ export async function processWithAgent(
     if (cryptoAISDK.provider === 'gemini') {
       // Gemini response format
       const candidate = data.candidates?.[0]
-      if (!candidate || !candidate.content) {
-        console.error('[Agent] ❌ No message in response:', data)
+      if (!candidate) {
+        console.error('[Agent] ❌ No candidate in response:', data)
         throw new Error('No response from AI')
+      }
+      
+      // Check if content exists and has parts
+      if (!candidate.content || !candidate.content.parts || candidate.content.parts.length === 0) {
+        console.error('[Agent] ❌ Empty response from Gemini:', JSON.stringify(candidate, null, 2))
+        console.error('[Agent] ❌ Full response:', JSON.stringify(data, null, 2))
+        // If finishReason is SAFETY, the model blocked the response
+        if (candidate.finishReason === 'SAFETY') {
+          throw new Error('Response blocked by safety filters')
+        }
+        // Return a fallback message
+        throw new Error('Empty response from AI - model may have refused to respond')
       }
       
       console.log('[Agent] 🔍 Gemini candidate content parts:', JSON.stringify(candidate.content.parts, null, 2))
       
       // Extract text content and function calls from all parts
-      const textParts = candidate.content.parts?.filter((part: any) => part.text) || []
-      const functionCallParts = candidate.content.parts?.filter((part: any) => part.functionCall) || []
+      const textParts = candidate.content.parts.filter((part: any) => part.text) || []
+      const functionCallParts = candidate.content.parts.filter((part: any) => part.functionCall) || []
       
       const content = textParts.map((p: any) => p.text).join(' ') || ''
       const functionCalls = functionCallParts.map((part: any, idx: number) => {
@@ -339,11 +381,10 @@ export async function processWithAgent(
           const { brand } = JSON.parse(args)
           result = await findCard(brand)
           if (cryptoAISDK.provider === 'gemini') {
+            // Gemini function response format
             toolResults.push({
-              functionResponse: {
-                name: toolCall.function.name,
-                response: result,
-              },
+              functionName: toolCall.function.name,
+              response: result,
             })
           } else {
             toolResults.push({
@@ -354,21 +395,48 @@ export async function processWithAgent(
           }
         } else if (name === 'listAllItems') {
           result = await listAllItems()
-          // Filter items if user specified a max price
-          const maxPriceMatch = message.toLowerCase().match(/less than \$?(\d+)|under \$?(\d+)|max \$?(\d+)/i)
-          const maxPrice = maxPriceMatch ? parseFloat(maxPriceMatch[1] || maxPriceMatch[2] || maxPriceMatch[3]) * 100 : null
+          // Filter items based on price queries
+          const messageLower = message.toLowerCase()
+          
+          // Check for "at least $X", "minimum $X", "$X or more", "$X+"
+          const minPricePatterns = [
+            /(?:at least|minimum|at minimum)\s*\$?(\d+)/i,
+            /\$?(\d+)\s*or\s*more/i,
+            /\$?(\d+)\s*\+/i,
+          ]
+          let minPrice: number | null = null
+          for (const pattern of minPricePatterns) {
+            const match = messageLower.match(pattern)
+            if (match && match[1]) {
+              minPrice = parseFloat(match[1]) * 100
+              break
+            }
+          }
+          
+          // Check for "less than $X", "under $X", "max $X"
+          const maxPriceMatch = messageLower.match(/(?:less than|under|max|maximum|up to)\s*\$?(\d+)/i)
+          const maxPrice = maxPriceMatch ? parseFloat(maxPriceMatch[1]) * 100 : null
           
           let filteredItems = result
+          if (minPrice) {
+            filteredItems = result.filter((item: any) => item.price >= minPrice)
+            console.log(`[Agent] 🔍 Filtered to items with price >= $${minPrice / 100}: ${filteredItems.length} items`)
+          }
           if (maxPrice) {
-            filteredItems = result.filter((item: any) => item.price <= maxPrice)
+            filteredItems = filteredItems.filter((item: any) => item.price <= maxPrice)
+            console.log(`[Agent] 🔍 Filtered to items with price <= $${maxPrice / 100}: ${filteredItems.length} items`)
           }
           
           if (cryptoAISDK.provider === 'gemini') {
+            // Limit response size for Gemini (may have token limits)
+            // Keep first 10 items to avoid exceeding limits
+            const limitedItems = filteredItems.slice(0, 10)
+            console.log(`[Agent] 📦 Limiting tool response to ${limitedItems.length} items (from ${filteredItems.length})`)
+            
+            // Gemini function response format: response data goes directly, not nested in "response"
             toolResults.push({
-              functionResponse: {
-                name: toolCall.function.name,
-                response: filteredItems,
-              },
+              functionName: toolCall.function.name,
+              response: limitedItems,
             })
           } else {
             toolResults.push({
@@ -425,11 +493,16 @@ export async function processWithAgent(
         })
         
         // Add function responses
+        // Gemini format: functionResponse needs name and response as Struct (object)
+        // For arrays, pass the array directly. For objects, pass the object directly.
         for (const tr of toolResults) {
           contents.push({
             role: 'function',
             parts: [{
-              functionResponse: tr.functionResponse,
+              functionResponse: {
+                name: tr.functionName,
+                response: tr.response, // Pass object/array directly, not stringified
+              },
             }],
           })
         }
@@ -480,6 +553,9 @@ export async function processWithAgent(
         }
       }
 
+      console.log('[Agent] 📡 Making second API call with tool results...')
+      console.log('[Agent] Tool results count:', toolResults.length)
+      
       const secondResponse = await fetch(secondEndpoint, {
         method: 'POST',
         headers: secondHeaders,
@@ -487,7 +563,10 @@ export async function processWithAgent(
       })
 
       if (!secondResponse.ok) {
-        throw new Error(`AI API error: ${secondResponse.statusText}`)
+        const errorText = await secondResponse.text()
+        console.error('[Agent] ❌ Second API call failed:', secondResponse.status, errorText)
+        console.error('[Agent] Request body size:', JSON.stringify(secondRequestBody).length, 'bytes')
+        throw new Error(`AI API error: ${secondResponse.statusText} - ${errorText.substring(0, 200)}`)
       }
 
       const secondData = await secondResponse.json()
@@ -512,9 +591,46 @@ export async function processWithAgent(
         // If not JSON, check if we should create a purchase intent
         let toolResult: any
         if (cryptoAISDK.provider === 'gemini') {
-          toolResult = toolResults[0]?.functionResponse?.response
+          toolResult = toolResults[0]?.response
         } else {
           toolResult = JSON.parse(toolResults[0]?.content || 'null')
+        }
+        
+        // Check if user is confirming a purchase
+        const lowerMessage = message.toLowerCase()
+        const purchaseConfirmations = ['yes', 'proceed', 'buy', 'purchase', 'confirm', 'ok', 'sure', 'go ahead', 'do it']
+        const isPurchaseConfirmation = purchaseConfirmations.some(conf => lowerMessage.includes(conf))
+        
+        // If user confirmed purchase and we have a single item from findCard
+        if (isPurchaseConfirmation && toolResult && !Array.isArray(toolResult) && toolResult.id) {
+          // Single item from findCard - create purchase intent
+          const item = toolResult
+          const amountInCents = item.price
+          // Convert price (in cents) to USDC base units (6 decimals)
+          // $50 = 5000 cents → (5000/100) * 1,000,000 = 50,000,000 base units
+          const amountInBaseUnits = Math.floor((amountInCents / 100) * 1_000_000).toString()
+          
+          console.log('[Agent] 🛒 Creating purchase intent for:', item.name, `$${(amountInCents / 100).toFixed(2)}`)
+          
+          return {
+            reasoning: 'User confirmed purchase of gift card found via findCard.',
+            intent: 'purchase',
+            purchaseIntent: {
+              brand: item.brand,
+              amount: amountInBaseUnits,
+              currency: 'USDC',
+              description: `${item.name} - $${(amountInCents / 100).toFixed(2)} USD`,
+              metadata: {
+                giftCardItemId: item.id,
+                giftCardItemName: item.name,
+                giftCardPrice: amountInCents,
+                giftCardCurrency: item.currency || 'USD',
+                brand: item.brand,
+              },
+            },
+            message: `Great! I found a ${item.name} for $${(amountInCents / 100).toFixed(2)}. Ready to proceed with payment?`,
+            confidence: 0.9,
+          }
         }
         
         if (toolResult && Array.isArray(toolResult) && toolResult.length > 0) {
@@ -544,6 +660,61 @@ export async function processWithAgent(
     // No function calls - regular response
     const content = aiMessage.content || 'I understand. How can I help you?'
     
+    // Check if this is a purchase confirmation without tool calls
+    // This can happen if user confirms after we already found a card in previous messages
+    const lowerMessage = message.toLowerCase()
+    const purchaseConfirmations = ['yes', 'proceed', 'buy', 'purchase', 'confirm', 'ok', 'sure', 'go ahead', 'do it']
+    const isPurchaseConfirmation = purchaseConfirmations.some(conf => lowerMessage.includes(conf))
+    
+    // Try to find the card from previous messages context
+    if (isPurchaseConfirmation && previousMessages.length > 0) {
+      // Look for brand mentions in recent messages
+      const recentMessages = previousMessages.slice(-3).map(m => m.content).join(' ')
+      const brands = ['amazon', 'steam', 'roblox', 'starbucks', 'netflix', 'spotify', 'uber', 'apple', 'xbox', 'playstation']
+      let foundBrand: string | undefined
+      
+      for (const brand of brands) {
+        if (recentMessages.toLowerCase().includes(brand)) {
+          foundBrand = brand
+          break
+        }
+      }
+      
+      if (foundBrand) {
+        // Try to find the card
+        const { findCard } = await import('./tools')
+        const giftCardItem = await findCard(foundBrand)
+        
+        if (giftCardItem) {
+          const amountInCents = giftCardItem.price
+          // Convert price (in cents) to USDC base units (6 decimals)
+          const amountInBaseUnits = Math.floor((amountInCents / 100) * 1_000_000).toString()
+          
+          console.log('[Agent] 🛒 Creating purchase intent from confirmation:', giftCardItem.name)
+          
+          return {
+            reasoning: 'User confirmed purchase after card was found in previous conversation.',
+            intent: 'purchase',
+            purchaseIntent: {
+              brand: giftCardItem.brand,
+              amount: amountInBaseUnits,
+              currency: 'USDC',
+              description: `${giftCardItem.name} - $${(amountInCents / 100).toFixed(2)} USD`,
+              metadata: {
+                giftCardItemId: giftCardItem.id,
+                giftCardItemName: giftCardItem.name,
+                giftCardPrice: amountInCents,
+                giftCardCurrency: giftCardItem.currency || 'USD',
+                brand: giftCardItem.brand,
+              },
+            },
+            message: `Perfect! Ready to purchase ${giftCardItem.name} for $${(amountInCents / 100).toFixed(2)}. Click the button below to proceed with payment.`,
+            confidence: 0.9,
+          }
+        }
+      }
+    }
+    
     // Try to parse as JSON for structured response
     try {
       const parsed = JSON.parse(content)
@@ -560,8 +731,15 @@ export async function processWithAgent(
   } catch (error) {
     console.error('[Agent] ❌ Crypto.com AI SDK error:', error)
     console.error('[Agent] Stack trace:', error instanceof Error ? error.stack : 'No stack trace')
+    
+    // Check if it's a rate limit error
+    if (error instanceof Error && error.message === 'RATE_LIMIT_EXCEEDED') {
+      console.warn('[Agent] ⚠️ Rate limit exceeded - using fallback processing')
+    } else {
+      console.warn('[Agent] ⚠️ Falling back to rule-based processing')
+    }
+    
     // Fallback to rule-based processing
-    console.warn('[Agent] ⚠️ Falling back to rule-based processing')
     return processWithFallback(message, userAddress)
   }
 }

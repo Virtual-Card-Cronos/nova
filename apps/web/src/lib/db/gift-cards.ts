@@ -13,19 +13,29 @@ export async function getAllGiftCardItems(): Promise<GiftCardItem[]> {
     throw new Error('Database not configured. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY')
   }
 
+  const startTime = Date.now()
   console.log('[DB] 📦 Fetching all gift card items from database...')
+  
+  // Only select needed columns for better performance
   const { data, error } = await supabase
     .from('gift_card_items')
-    .select('*')
+    .select('id, name, description, brand, price, currency, image_url, inventory_count, is_active, created_at, updated_at')
     .eq('is_active', true)
     .order('brand', { ascending: true })
 
+  const duration = Date.now() - startTime
+
   if (error) {
-    console.error('[DB] ❌ Error fetching gift card items:', error)
+    console.error(`[DB] ❌ Error fetching gift card items (${duration}ms):`, error)
     throw error
   }
 
-  console.log('[DB] ✅ Retrieved', data?.length || 0, 'gift card items from database')
+  console.log(`[DB] ✅ Retrieved ${data?.length || 0} gift card items from database in ${duration}ms`)
+  
+  if (duration > 1000) {
+    console.warn(`[DB] ⚠️ Slow query: ${duration}ms (expected < 1000ms). Consider adding database indexes.`)
+  }
+  
   return data || []
 }
 

@@ -68,7 +68,7 @@ export function PaymentBanner(props: {
               <span className="text-white">~0.42 CRO</span>
             </div>
             <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Facilitator Address</span>
+              <span className="text-slate-400">Merchant Address</span>
               <span className="text-white font-mono">{challenge.resource.recipient.slice(0, 6)}...{challenge.resource.recipient.slice(-4)}</span>
             </div>
           </div>

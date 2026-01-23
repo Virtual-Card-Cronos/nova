@@ -9,7 +9,7 @@
 import { useState, useCallback } from 'react'
 import { useActiveAccount, useActiveWalletChain } from "thirdweb/react"
 import { PurchaseIntent, X402Challenge } from '@/lib/types'
-import { createEthersSignerAdapter } from '@/lib/ethers-adapter'
+import { createPaymentHeader, createPaymentRequirementsFromChallenge } from '@/lib/payment-header-generator'
 
 interface PaymentState {
   status: 'idle' | 'requesting' | 'signing' | 'submitting' | 'confirming' | 'completed' | 'failed'
@@ -138,36 +138,19 @@ export function useX402Payment(): UseX402PaymentReturn {
 
     try {
       const { challenge } = paymentState
-      const chainId = chain.id
-      const rpcUrl = process.env.NEXT_PUBLIC_CRONOS_RPC
       
-      // Create ethers signer adapter from thirdweb account
-      const signer = createEthersSignerAdapter(account, chainId, rpcUrl)
+      // Generate payment requirements from challenge
+      const paymentRequirements = createPaymentRequirementsFromChallenge(challenge)
       
-      // Generate payment header via API route (server-side)
-      // The facilitator SDK uses Node.js crypto which can't be bundled client-side
-      const headerResponse = await fetch('/api/payment/generate-header', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          to: challenge.resource.recipient,
-          value: challenge.resource.amount,
-          // We can't pass the signer object, so we'll need to sign client-side
-          // For now, let's use a workaround: sign the message client-side and send the signature
-          accountAddress: account.address,
-          chainId: chainId,
-        }),
+      // Generate payment header client-side (EIP-712 signature)
+      // This follows the Cronos X402 documentation exactly
+      console.log('[Payment] 🔐 Generating payment header client-side...')
+      const paymentHeader = await createPaymentHeader({
+        account,
+        paymentRequirements,
+        network: challenge.network || 'cronos-testnet',
       })
-
-      if (!headerResponse.ok) {
-        // Fallback: try to generate header client-side if API fails
-        // This will fail at build time but might work if we can exclude facilitator-client from client bundle
-        throw new Error('Payment header generation requires server-side API. Please ensure /api/payment/generate-header is available.')
-      }
-
-      const { paymentHeader } = await headerResponse.json()
+      console.log('[Payment] ✅ Payment header generated:', paymentHeader.substring(0, 50) + '...')
 
       setPaymentState(prev => ({ ...prev, status: 'submitting' }))
 

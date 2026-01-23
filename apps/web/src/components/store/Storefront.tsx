@@ -47,11 +47,28 @@ export function Storefront() {
   const { paymentState, initiatePayment, confirmPayment, resetPayment } = useX402Payment()
 
   useEffect(() => {
+    let cancelled = false
+    const startTime = Date.now()
+    
     async function fetchItems() {
       try {
         setLoading(true)
-        const response = await fetch('/api/gift-cards')
+        setError(null)
+        
+        console.log('[Storefront] 📡 Fetching gift cards...')
+        const response = await fetch('/api/gift-cards', {
+          // Add cache headers for better performance
+          cache: 'default',
+        })
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+        }
+        
         const data = await response.json()
+        const fetchDuration = Date.now() - startTime
+        
+        if (cancelled) return
         
         if (!data.success) {
           throw new Error(data.error || 'Failed to fetch gift cards')
@@ -74,17 +91,30 @@ export function Storefront() {
             supportedCurrencies: ['USDC', 'CRO'],
           }))
 
+        if (cancelled) return
+        
         setItems(transformedItems)
-        console.log('[Storefront] ✅ Loaded', transformedItems.length, 'gift cards')
+        console.log(`[Storefront] ✅ Loaded ${transformedItems.length} gift cards in ${fetchDuration}ms`)
+        
+        if (fetchDuration > 2000) {
+          console.warn(`[Storefront] ⚠️ Slow load: ${fetchDuration}ms`)
+        }
       } catch (err) {
+        if (cancelled) return
         console.error('[Storefront] ❌ Error fetching items:', err)
         setError(err instanceof Error ? err.message : 'Failed to load gift cards')
       } finally {
-        setLoading(false)
+        if (!cancelled) {
+          setLoading(false)
+        }
       }
     }
 
     fetchItems()
+    
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   // Handle fulfillment after payment completes

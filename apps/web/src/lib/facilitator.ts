@@ -35,7 +35,11 @@ async function getFacilitatorClient() {
     facilitatorClient = new Fac({
       network,
       baseUrl: process.env.NEXT_PUBLIC_FACILITATOR_BASE_URL || 'https://facilitator.cronoslabs.org/v2/x402',
+      // Note: The SDK might not accept 'scheme' in the constructor
+      // The scheme is extracted from the payment header itself
     })
+    
+    console.log('[Facilitator] ✅ Initialized facilitator client with network:', network)
   }
   return facilitatorClient
 }
@@ -55,11 +59,12 @@ export interface PurchaseResponse {
 function getMerchantRecipientAddress(): string {
   // Check if explicitly set in environment
   const envAddress = process.env.NEXT_PUBLIC_MERCHANT_ADDRESS || 
-                     process.env.MERCHANT_ADDRESS ||
+                     "0x44690185E7c5137a691AB74eE62494b0618CfEd8" ||
                      process.env.NEXT_PUBLIC_FACILITATOR_ADDRESS || // Legacy support
                      process.env.FACILITATOR_ADDRESS // Legacy support
   
   if (envAddress && envAddress.startsWith('0x') && envAddress.length === 42) {
+    console.log('[Facilitator] ✅ Using merchant address:', envAddress)
     return envAddress
   }
 
@@ -164,43 +169,78 @@ export async function submitPaymentRequest(
     const facilitator = await getFacilitatorClient()
     const { challenge } = request
     
+    console.log('[Facilitator] 📤 Submitting payment request...')
+    console.log('[Facilitator] Challenge:', JSON.stringify(challenge, null, 2))
+    console.log('[Facilitator] Signature (first 50 chars):', signature.substring(0, 50))
+    
     // Generate payment requirements from challenge
     // payTo is the merchant/seller address (recipient in challenge)
-    // asset should be USDC.e contract address for the network
+    // asset should be USDC.e (mainnet) or devUSDC.e (testnet) contract address for the network
     const network = challenge.network === 'cronos' ? 'cronos' : 'cronos-testnet'
     const usdcContract = network === 'cronos-testnet' 
-      ? '0xc01efAaF7C5C61bEbFAeb358E1161b537b8bC0e0' // Testnet USDC.e
+      ? '0xc01efAaF7C5C61bEbFAeb358E1161b537b8bC0e0' // Testnet devUSDC.e (for x402 facilitator)
       : '0xf951eC28187D9E5Ca673Da8FE6757E6f0Be5F77C' // Mainnet USDC.e
     
+    console.log('[Facilitator] Generating payment requirements...')
+    // Note: Both payment header and payment requirements MUST use scheme: "exact"
+    // Per Cronos X402 documentation: https://docs.cronos.org/cronos-x402-facilitator
     const requirements = facilitator.generatePaymentRequirements({
       payTo: challenge.resource.recipient, // Merchant/seller address
       description: challenge.resource.description,
       maxAmountRequired: challenge.resource.amount,
       asset: usdcContract, // USDC.e contract address
+      scheme: 'exact', // SDK expects "exact" not "x402" for payment requirements
+      mimeType: 'application/json', // Optional but recommended
+      maxTimeoutSeconds: 300, // Optional but recommended
     })
     
+    console.log('[Facilitator] Payment requirements:', JSON.stringify(requirements, null, 2))
+    
     // Build verify request with the signature (payment header)
+    // The signature is the base64-encoded payment header
+    // The SDK will decode it and extract the scheme
+    console.log('[Facilitator] Building verify request...')
+    console.log('[Facilitator] Signature length:', signature.length)
+    
+    // Try to decode and inspect the payment header
+    try {
+      const decodedHeader = JSON.parse(atob(signature))
+      console.log('[Facilitator] Decoded payment header:', JSON.stringify(decodedHeader, null, 2))
+      console.log('[Facilitator] Header scheme:', decodedHeader.scheme)
+      console.log('[Facilitator] Header network:', decodedHeader.network)
+    } catch (e) {
+      console.warn('[Facilitator] ⚠️ Could not decode payment header:', e)
+    }
+    
     const verifyRequest = facilitator.buildVerifyRequest(signature, requirements)
     
+    console.log('[Facilitator] Verifying payment...')
     // Verify the payment first
     const verifyResult = await facilitator.verifyPayment(verifyRequest)
     
     if (!verifyResult.isValid) {
+      console.error('[Facilitator] ❌ Payment verification failed:', verifyResult.invalidReason)
       return {
         success: false,
         error: verifyResult.invalidReason || 'Payment verification failed',
       }
     }
     
+    console.log('[Facilitator] ✅ Payment verified, settling...')
     // If verification succeeds, settle the payment
     const settleResult = await facilitator.settlePayment(verifyRequest)
     
+    console.log('[Facilitator] ✅ Payment settled. Transaction hash:', settleResult.txHash)
     return {
       success: true,
       transactionHash: settleResult.txHash,
     }
   } catch (error) {
-    console.error('Facilitator payment submission failed:', error)
+    console.error('[Facilitator] ❌ Payment submission failed:', error)
+    console.error('[Facilitator] Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown facilitator error',

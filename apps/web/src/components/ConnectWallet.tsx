@@ -24,6 +24,15 @@ export function ConnectWallet() {
           },
         }}
         theme="dark"
+        supportedTokens={{338:[
+          {
+            address: '0xc01efAaF7C5C61bEbFAeb358E1161b537b8bC0e0', // token contract address
+            name: 'devUSDC.e',
+            symbol: 'devUSDC.e',
+        },
+        ]
+
+        }}
       />
     </div>
   )
