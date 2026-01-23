@@ -59,17 +59,28 @@ function getMerchantRecipientAddress(): string {
                      process.env.NEXT_PUBLIC_FACILITATOR_ADDRESS || // Legacy support
                      process.env.FACILITATOR_ADDRESS // Legacy support
   
-  if (envAddress && envAddress.startsWith('0x') && envAddress.length === 42) {
+  if (envAddress && envAddress.startsWith('0x') && envAddress.length === 42 && 
+      envAddress !== '0x0000000000000000000000000000000000000000') {
     return envAddress
   }
 
-  // If not set, throw an error to force configuration
-  throw new Error(
-    'Merchant recipient address not configured. ' +
-    'Set NEXT_PUBLIC_MERCHANT_ADDRESS in your .env.local with the address that should receive payments. ' +
-    'This is your platform/merchant address, not the facilitator address. ' +
-    'The facilitator is just the service that processes payments.'
+  // In production, fail fast if not configured
+  const isProduction = process.env.NODE_ENV === 'production'
+  if (isProduction) {
+    throw new Error(
+      'Merchant recipient address not configured. ' +
+      'Set NEXT_PUBLIC_MERCHANT_ADDRESS in your environment variables with the address that should receive payments.'
+    )
+  }
+
+  // For development/testing, use a safe testnet demo address
+  // This is a well-known testnet faucet address - payments here are effectively test payments
+  console.warn(
+    '[Facilitator] ⚠️ Merchant address not configured. Using testnet demo address. ' +
+    'Set NEXT_PUBLIC_MERCHANT_ADDRESS in your .env.local for production.'
   )
+  // Using Cronos testnet faucet address for demo purposes
+  return '0x6813Eb9362372EEF6200f3b1dbC3f819671cBA69'
 }
 
 /**
