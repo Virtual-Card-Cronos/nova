@@ -5,16 +5,28 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { ConnectWallet } from '@/components/ConnectWallet'
 import { useActiveAccount } from "thirdweb/react"
+import { isAdmin } from '@/lib/admin'
 
 export type AppView = 'store' | 'agent'
 
 export function AppShell(props: { initialView?: AppView; children: (view: AppView) => React.ReactNode }) {
   const account = useActiveAccount()
   const [view, setView] = useState<AppView>(props.initialView ?? 'agent')
+  const [showAdminLink, setShowAdminLink] = useState(false)
+
+  // Check if current user is admin
+  useEffect(() => {
+    if (account) {
+      setShowAdminLink(isAdmin(account.address))
+    } else {
+      setShowAdminLink(false)
+    }
+  }, [account])
 
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark">
@@ -48,6 +60,12 @@ export function AppShell(props: { initialView?: AppView; children: (view: AppVie
                 Agent
               </button>
               <a href="#" className="hover:text-white transition-colors">History</a>
+              {showAdminLink && (
+                <Link href="/admin" className="hover:text-white transition-colors flex items-center gap-1">
+                  <span className="material-symbols-outlined text-sm">admin_panel_settings</span>
+                  Admin
+                </Link>
+              )}
             </nav>
 
             <div className="flex items-center gap-4 border-l border-white/10 pl-6">
