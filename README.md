@@ -4,12 +4,6 @@
 
 NovaAgent is a revolutionary shopping platform that combines the power of AI with blockchain-based policy controls to create secure, autonomous purchasing experiences. Built for the Crypto.com DeFi Dashboard, this project demonstrates the future of AI-agent commerce with gasless, policy-governed transactions.
 
-## 🏆 Why This is a Hackathon Winner
-
-### The Aegis Pattern - A Breakthrough Architecture
-
-NovaAgent introduces the **Aegis Pattern**, a novel combination of AI agents and smart contract policy engines that enables:
-
 - **🤖 AI-Driven Commerce**: Intelligent agents that understand shopping intent and execute purchases autonomously
 - **🔐 Policy-First Security**: On-chain spending limits and authorization controls prevent unauthorized transactions
 - **⚡ Gasless Transactions**: Users never pay gas fees, thanks to Crypto.com's x402 facilitator
