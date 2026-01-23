@@ -95,12 +95,26 @@ export function Storefront() {
   }, [paymentState.status, paymentState.transactionHash, selectedItem])
 
   async function handlePurchase(item: CatalogItem) {
-    if (!account) return
+    if (!account) {
+      alert('Please connect your wallet first')
+      return
+    }
+
+    if (item.inventory_count === 0) {
+      alert('This item is out of stock')
+      return
+    }
 
     setSelectedItem(item)
     
     // Convert price to USDC base units (6 decimals)
     const usdcAmount = Math.floor((item.price / 100) * 1_000_000).toString()
+    
+    console.log('[Storefront] 🛒 Initiating purchase:', {
+      item: item.name,
+      price: `$${(item.price / 100).toFixed(2)}`,
+      usdcAmount,
+    })
     
     const intent: PurchaseIntent = {
       agentId: account.address,
@@ -118,7 +132,15 @@ export function Storefront() {
       },
     }
 
-    await initiatePayment(intent)
+    try {
+      await initiatePayment(intent)
+      console.log('[Storefront] ✅ Payment initiated, status:', paymentState.status)
+    } catch (error) {
+      console.error('[Storefront] ❌ Payment initiation error:', error)
+      alert(`Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      resetPayment()
+      setSelectedItem(null)
+    }
   }
 
   async function handleFulfillment(item: CatalogItem, transactionHash: string) {
@@ -354,11 +376,21 @@ export function Storefront() {
                   </div>
                   <button
                     type="button"
-                    disabled={!account || item.inventory_count === 0 || paymentState.status !== 'idle'}
+                    disabled={!account || item.inventory_count === 0 || (paymentState.status !== 'idle' && selectedItem?.id !== item.id)}
                     onClick={() => handlePurchase(item)}
                     className="bg-primary-user/10 hover:bg-primary-user text-primary-user hover:text-white transition-all px-4 py-1.5 rounded-lg text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {paymentState.status === 'idle' ? 'Buy' : 'Processing...'}
+                    {paymentState.status !== 'idle' && selectedItem?.id === item.id
+                      ? paymentState.status === 'requesting' 
+                        ? 'Requesting...'
+                        : paymentState.status === 'signing'
+                        ? 'Signing...'
+                        : paymentState.status === 'submitting'
+                        ? 'Submitting...'
+                        : paymentState.status === 'confirming'
+                        ? 'Confirming...'
+                        : 'Processing...'
+                      : 'Buy'}
                   </button>
                 </div>
                 <div className="mt-3 text-xs text-slate-400">{item.denominationRange}</div>
@@ -368,23 +400,28 @@ export function Storefront() {
         </div>
       </section>
 
-      {/* Payment Banner */}
+      {/* Payment Banner - Fixed position at bottom */}
       {paymentState.status !== 'idle' && (
-        <div className="mt-8">
-          <PaymentBanner
-            state={
-              paymentState.status === 'failed'
-                ? { status: 'failed', challenge: paymentState.challenge, error: paymentState.error }
-                : { status: paymentState.status, challenge: paymentState.challenge }
-            }
-            onSignAndPay={() => confirmPayment('')}
-            onReset={() => {
-              resetPayment()
-              setSelectedItem(null)
-            }}
-          />
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-background-dark border-t border-white/10 shadow-2xl">
+          <div className="max-w-[1200px] mx-auto px-6 py-4">
+            <PaymentBanner
+              state={
+                paymentState.status === 'failed'
+                  ? { status: 'failed', challenge: paymentState.challenge, error: paymentState.error }
+                  : { status: paymentState.status, challenge: paymentState.challenge }
+              }
+              onSignAndPay={() => confirmPayment('')}
+              onReset={() => {
+                resetPayment()
+                setSelectedItem(null)
+              }}
+            />
+          </div>
         </div>
       )}
+
+      {/* Spacer to prevent content from being hidden behind fixed payment banner */}
+      {paymentState.status !== 'idle' && <div className="h-32"></div>}
     </div>
   )
 }

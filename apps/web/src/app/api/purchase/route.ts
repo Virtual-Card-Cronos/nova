@@ -25,9 +25,22 @@ const ERROR_MESSAGES = {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('[Purchase API] 📥 Received purchase request')
+    
     // Parse request body
-    const body = await request.json()
-    const { agentId, amount, currency, description, recipient }: PurchaseIntent = body
+    let body: PurchaseIntent
+    try {
+      body = await request.json()
+    } catch (error) {
+      console.error('[Purchase API] ❌ Failed to parse request body:', error)
+      return NextResponse.json(
+        { error: 'Invalid request body' },
+        { status: HTTP_STATUS.BAD_REQUEST }
+      )
+    }
+    
+    const { agentId, amount, currency, description, recipient } = body
+    console.log('[Purchase API] 📋 Request details:', { agentId, amount, currency, description: description.substring(0, 50) })
 
     // Validate required fields
     if (!agentId || !amount || !currency || !description || !recipient) {
@@ -96,12 +109,23 @@ export async function POST(request: NextRequest) {
     }
 
     // Policy passed - create x402 challenge
-    const challenge = await createX402Challenge(
-      amount.toString(),
-      description,
-      recipient,
-      'cronos-testnet' // Cronos Testnet
-    )
+    console.log('[Purchase API] ✅ Policy approved, creating x402 challenge...')
+    let challenge
+    try {
+      challenge = await createX402Challenge(
+        amount.toString(),
+        description,
+        recipient,
+        'cronos-testnet' // Cronos Testnet
+      )
+      console.log('[Purchase API] ✅ Challenge created successfully')
+    } catch (error) {
+      console.error('[Purchase API] ❌ Failed to create challenge:', error)
+      return NextResponse.json(
+        { error: 'Failed to create payment challenge' },
+        { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+      )
+    }
 
     // Create WWW-Authenticate header
     const wwwAuthenticate = createWWWAuthenticateHeader(challenge)
@@ -127,11 +151,15 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Purchase API error:', error)
+    console.error('[Purchase API] ❌ Unexpected error:', error)
+    console.error('[Purchase API] Error stack:', error instanceof Error ? error.stack : 'No stack trace')
 
     // Handle unexpected errors
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     )
   }

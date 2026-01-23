@@ -57,9 +57,22 @@ export function useX402Payment(): UseX402PaymentReturn {
         body: JSON.stringify(intent),
       })
 
+      // Check content type first
+      const contentType = response.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text()
+        console.error('[Payment] ❌ Non-JSON response:', text.substring(0, 200))
+        throw new Error(`Server returned HTML instead of JSON. This usually means the API route has an error. Check server logs.`)
+      }
+
       if (response.status === 402) {
         // Parse x402 challenge
         const x402Response = await response.json()
+        console.log('[Payment] ✅ Received 402 challenge:', x402Response)
+
+        if (!x402Response.challenge) {
+          throw new Error('Invalid challenge format in response')
+        }
 
         setPaymentState({
           status: 'signing',
@@ -73,11 +86,18 @@ export function useX402Payment(): UseX402PaymentReturn {
           error: error.error || 'Payment not authorized by policy',
         })
       } else if (!response.ok) {
-        // Other error
-        const error = await response.json()
+        // Other error - try to parse as JSON, fallback to text
+        let errorMessage = 'Payment request failed'
+        try {
+          const error = await response.json()
+          errorMessage = error.error || errorMessage
+        } catch {
+          const text = await response.text()
+          errorMessage = text.substring(0, 100) || errorMessage
+        }
         setPaymentState({
           status: 'failed',
-          error: error.error || 'Payment request failed',
+          error: errorMessage,
         })
       } else {
         // Unexpected success (shouldn't happen with x402)
@@ -87,10 +107,16 @@ export function useX402Payment(): UseX402PaymentReturn {
         })
       }
     } catch (error) {
-      console.error('Payment initiation failed:', error)
+      console.error('[Payment] ❌ Payment initiation failed:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Network error'
+      console.error('[Payment] Error details:', {
+        message: errorMessage,
+        account: account?.address,
+        intent,
+      })
       setPaymentState({
         status: 'failed',
-        error: error instanceof Error ? error.message : 'Network error',
+        error: errorMessage,
       })
     }
   }, [account])
