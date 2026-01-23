@@ -18,8 +18,12 @@ const USDC_NAMES: Record<number, string> = {
   338: 'Bridged USDC (Stargate)',
 }
 
+// Signature validity duration in seconds (1 hour)
+const SIGNATURE_VALIDITY_SECONDS = 3600
+
 /**
- * Generate a random 32-byte nonce as hex string
+ * Generate a cryptographically secure random 32-byte nonce as hex string
+ * Uses Node.js crypto.randomBytes which is cryptographically secure
  */
 function generateNonce(): string {
   return '0x' + randomBytes(32).toString('hex')
@@ -51,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     // Generate timestamps
     const validAfter = 0 // Immediately valid
-    const validBefore = Math.floor(Date.now() / 1000) + 3600 // Valid for 1 hour
+    const validBefore = Math.floor(Date.now() / 1000) + SIGNATURE_VALIDITY_SECONDS
     
     // Generate unique nonce
     const nonce = generateNonce()

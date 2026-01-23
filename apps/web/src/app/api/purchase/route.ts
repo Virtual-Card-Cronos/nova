@@ -81,7 +81,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate recipient address if provided (optional - defaults to merchant address)
-    if (recipient && (typeof recipient !== 'string' || (recipient.length > 0 && (!recipient.startsWith('0x') || recipient.length !== 42)))) {
+    const isRecipientInvalid = recipient && 
+      typeof recipient === 'string' && 
+      recipient.length > 0 && 
+      (!recipient.startsWith('0x') || recipient.length !== 42)
+    
+    if (isRecipientInvalid) {
       return NextResponse.json(
         { error: 'Invalid recipient address format' },
         { status: HTTP_STATUS.BAD_REQUEST }

@@ -191,7 +191,7 @@ export function useX402Payment(): UseX402PaymentReturn {
         primaryType,
         message,
       })
-      console.log('[Payment] ✅ Signature received:', signature.substring(0, 20) + '...')
+      console.log('[Payment] ✅ Signature received')
 
       // Step 3: Build payment header from signature
       setPaymentState(prev => ({ ...prev, status: 'submitting' }))

@@ -11,6 +11,9 @@ const USDC_CONTRACTS: Record<number, string> = {
   338: '0xc01efAaF7C5C61bEbFAeb358E1161b537b8bC0e0',   // Cronos Testnet
 }
 
+// Signature validity duration in seconds (1 hour)
+const SIGNATURE_VALIDITY_SECONDS = 3600
+
 interface Eip3009Payload {
   from: string
   to: string
@@ -68,7 +71,7 @@ export async function POST(request: NextRequest) {
       to,
       value: value.toString(),
       validAfter: validAfter || 0,
-      validBefore: validBefore || Math.floor(Date.now() / 1000) + 3600,
+      validBefore: validBefore || Math.floor(Date.now() / 1000) + SIGNATURE_VALIDITY_SECONDS,
       nonce,
       signature,
       asset: usdcContract,
