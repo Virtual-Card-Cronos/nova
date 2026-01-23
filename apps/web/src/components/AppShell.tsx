@@ -6,6 +6,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { ConnectWallet } from '@/components/ConnectWallet'
 import { useActiveAccount } from "thirdweb/react"
 
@@ -21,9 +22,14 @@ export function AppShell(props: { initialView?: AppView; children: (view: AppVie
       <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md">
         <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
-              <span className="material-symbols-outlined text-[20px]">bolt</span>
-            </div>
+            <Image
+              src="/logo.png"
+              alt="Nova-x402 Logo"
+              width={32}
+              height={32}
+              className="rounded-lg"
+              priority
+            />
             <h2 className="text-xl font-extrabold tracking-tight text-white">Nova-x402</h2>
           </div>
 
