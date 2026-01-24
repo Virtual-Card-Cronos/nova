@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/novaagent.git"
+    "url": "git+https://github.com/Nanasark/nova-agent.git"
   },
   "keywords": [
     "ai",
@@ -32,8 +32,7 @@
     "web3",
     "shopping",
     "crypto",
-    "defi",
-    "hackathon"
+    "defi"
   ],
   "author": "NovaAgent Team",
   "license": "MIT"
