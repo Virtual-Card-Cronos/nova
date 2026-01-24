@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
-    "build": "next build --webpack",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint:check": "eslint src --ext .ts,.tsx --max-warnings 0"
+    "lint:check": "eslint . --ext .ts,.tsx --max-warnings 0"
   },
   "dependencies": {
     "@crypto.com/facilitator-client": "^1.0.4",
