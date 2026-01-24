@@ -6,6 +6,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Zap } from 'lucide-react'
 import { ConnectWallet } from '@/components/ConnectWallet'
 import { useActiveAccount } from "thirdweb/react"
 
@@ -22,7 +23,7 @@ export function AppShell(props: { initialView?: AppView; children: (view: AppVie
         <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
-              <span className="material-symbols-outlined text-[20px]">bolt</span>
+              <Zap className="w-5 h-5" />
             </div>
             <h2 className="text-xl font-extrabold tracking-tight text-white">Nova-x402</h2>
           </div>

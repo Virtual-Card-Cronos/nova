@@ -6,6 +6,7 @@
 'use client'
 
 import React from 'react'
+import { Bot, Gamepad2, ShieldCheck } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export type ChatMessage = {
@@ -42,7 +43,7 @@ export function ChatMessages(props: {
         >
           {message.role === 'assistant' && (
             <div className="w-10 h-10 rounded-full agent-gradient flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
-              <span className="material-symbols-outlined text-white text-[20px]">smart_toy</span>
+              <Bot className="w-5 h-5 text-white" />
             </div>
           )}
           <div className={`max-w-[70%] ${message.role === 'user' ? '' : 'flex flex-col gap-1 items-start'}`}>
@@ -93,7 +94,7 @@ export function ChatMessages(props: {
                 <div className="mt-4 p-3 bg-black/40 rounded-lg border border-primary/20 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded bg-[#171a21] flex items-center justify-center">
-                      <span className="material-symbols-outlined text-white text-[20px]">sports_esports</span>
+                      <Gamepad2 className="w-5 h-5 text-white" />
                     </div>
                     <div>
                       <p className="text-xs font-bold text-white">{message.purchaseIntent.metadata?.giftCardItemName || message.purchaseIntent.brand}</p>
@@ -114,7 +115,7 @@ export function ChatMessages(props: {
       {props.isTyping && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start gap-4 items-end">
           <div className="w-10 h-10 rounded-full agent-gradient flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined text-white text-[20px]">smart_toy</span>
+            <Bot className="w-5 h-5 text-white" />
           </div>
           <div className="bg-cronos-card border border-white/5 px-4 py-3 rounded-2xl rounded-tl-none">
             <div className="flex space-x-1">
@@ -141,7 +142,7 @@ export function ChatMessages(props: {
               onClick={props.onAuthorize}
               className="flex-1 bg-primary hover:bg-primary/90 text-white h-12 rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/30"
             >
-              <span className="material-symbols-outlined text-[20px]">verified_user</span>
+              <ShieldCheck className="w-5 h-5" />
               Authorize Settlement
             </button>
             <button

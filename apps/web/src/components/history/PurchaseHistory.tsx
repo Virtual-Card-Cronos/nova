@@ -6,6 +6,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { ShoppingBag, Receipt, ChevronUp, ChevronDown, Gift } from 'lucide-react'
 import { useActiveAccount } from 'thirdweb/react'
 import { Order, GiftCard, GiftCardItem } from '@/lib/db/supabase'
 
@@ -106,7 +107,7 @@ export function PurchaseHistory() {
   if (orders.length === 0) {
     return (
       <div className="text-center py-12">
-        <span className="material-symbols-outlined text-6xl text-slate-600 mb-4">shopping_bag</span>
+        <ShoppingBag className="w-16 h-16 text-slate-600 mb-4" />
         <h2 className="text-2xl font-bold text-white mb-2">No purchases yet</h2>
         <p className="text-slate-400">Your purchase history will appear here</p>
       </div>
@@ -144,7 +145,7 @@ export function PurchaseHistory() {
             >
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="material-symbols-outlined text-primary-user">receipt</span>
+                  <Receipt className="w-5 h-5 text-primary-user" />
                   <h3 className="text-lg font-bold text-white">
                     Order #{order.id.substring(0, 8).toUpperCase()}
                   </h3>
@@ -167,9 +168,7 @@ export function PurchaseHistory() {
                 <p className="text-xs text-slate-400">{order.currency}</p>
               </div>
               <button className="ml-4 text-slate-400 hover:text-white transition-colors">
-                <span className="material-symbols-outlined">
-                  {isExpanded ? 'expand_less' : 'expand_more'}
-                </span>
+                {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
               </button>
             </div>
 
@@ -232,9 +231,7 @@ export function PurchaseHistory() {
                           >
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-1">
-                                <span className="material-symbols-outlined text-primary-user text-sm">
-                                  card_giftcard
-                                </span>
+                                <Gift className="w-4 h-4 text-primary-user" />
                                 <p className="font-mono font-bold text-white">{card.code}</p>
                               </div>
                               <p className="text-xs text-slate-400">

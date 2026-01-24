@@ -5,7 +5,9 @@
 
 'use client'
 
+import React from 'react'
 import { useState, useEffect } from 'react'
+import { ChevronRight, Gamepad2, ShoppingBag, Car, Gift } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 type Card = {
@@ -21,11 +23,11 @@ type Card = {
 }
 
 // Map brands to icons and styles
-function getBrandConfig(brand: string): { icon: string; iconBg: string; tag: { text: string; color: string }; glowColor: string } {
+function getBrandConfig(brand: string): { icon: React.ComponentType<{ className?: string }>; iconBg: string; tag: { text: string; color: string }; glowColor: string } {
   const brandLower = brand.toLowerCase()
   if (brandLower.includes('steam')) {
     return {
-      icon: 'sports_esports',
+      icon: Gamepad2,
       iconBg: 'bg-[#171a21]',
       tag: { text: 'Gaming', color: 'bg-primary/10 text-primary' },
       glowColor: 'bg-primary/10',
@@ -33,7 +35,7 @@ function getBrandConfig(brand: string): { icon: string; iconBg: string; tag: { t
   }
   if (brandLower.includes('amazon')) {
     return {
-      icon: 'shopping_bag',
+      icon: ShoppingBag,
       iconBg: 'bg-white',
       tag: { text: 'Popular', color: 'bg-white/5 text-slate-500' },
       glowColor: 'bg-orange-500/10',
@@ -41,14 +43,14 @@ function getBrandConfig(brand: string): { icon: string; iconBg: string; tag: { t
   }
   if (brandLower.includes('uber')) {
     return {
-      icon: 'directions_car',
+      icon: Car,
       iconBg: 'bg-black',
       tag: { text: 'Instant', color: 'bg-emerald-500/10 text-emerald-500' },
       glowColor: 'bg-slate-500/10',
     }
   }
   return {
-    icon: 'card_giftcard',
+    icon: Gift,
     iconBg: 'bg-slate-800',
     tag: { text: 'Available', color: 'bg-primary/10 text-primary' },
     glowColor: 'bg-primary/10',
@@ -114,7 +116,7 @@ export function SuggestedCards() {
       <div className="flex items-center justify-between px-4 mb-6">
         <h2 className="text-white text-2xl font-bold tracking-tight">Suggested for You</h2>
         <button className="text-primary text-sm font-bold flex items-center gap-1 hover:underline">
-          View All Inventory <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+          View All Inventory <ChevronRight className="w-4 h-4" />
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -133,7 +135,7 @@ export function SuggestedCards() {
                 </div>
               ) : (
                 <div className={`w-14 h-14 ${card.iconBg} rounded-xl flex items-center justify-center mb-6 shadow-xl border border-white/10`}>
-                  <span className="material-symbols-outlined text-white text-[32px]">{card.icon}</span>
+                  {React.createElement(card.icon, { className: "w-8 h-8 text-white" })}
                 </div>
               )}
               <h3 className="text-xl font-bold mb-2 text-white">{card.title}</h3>

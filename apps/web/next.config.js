@@ -4,7 +4,7 @@ const webpack = require('webpack')
 
 const nextConfig = {
   transpilePackages: ["thirdweb"],
-  // Use webpack for path alias resolution (Turbopack doesn't support custom aliases yet)
+  // Webpack config: Next.js automatically uses webpack when this function is present
   webpack: (config, { isServer }) => {
     // Exclude @crypto.com/facilitator-client from client bundle
     // It uses Node.js crypto and should only be used in API routes
@@ -32,7 +32,8 @@ const nextConfig = {
     config.plugins = config.plugins || []
     
     // Replace x402 module imports from thirdweb
-    const stubPath = path.resolve(__dirname, 'src/lib/x402-stub.js')
+    // Use path.join for better cross-platform compatibility
+    const stubPath = path.join(__dirname, 'src', 'lib', 'x402-stub.js')
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(
         /thirdweb\/dist\/esm\/.*\/x402/,
@@ -42,8 +43,7 @@ const nextConfig = {
 
     return config
   },
-  // Add empty turbopack config to silence error (we're using webpack)
-  turbopack: {},
+  // Note: Next.js will use webpack automatically when webpack() function is defined
 }
 
 module.exports = nextConfig

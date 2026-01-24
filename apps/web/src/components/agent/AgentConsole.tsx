@@ -7,6 +7,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Wallet } from 'lucide-react'
 import { useActiveAccount } from "thirdweb/react"
 import { useX402Payment } from '@/hooks/useX402Payment'
 import { PurchaseIntent } from '@/lib/types'
@@ -144,7 +145,7 @@ export function AgentConsole() {
   if (!account) {
     return (
       <div className="glass-card rounded-2xl p-8 text-center">
-        <span className="material-symbols-outlined text-5xl text-slate-400 mb-4">account_balance_wallet</span>
+        <Wallet className="w-12 h-12 text-slate-400 mb-4" />
         <div className="mt-3 text-lg font-semibold text-white">Connect your wallet</div>
         <div className="mt-1 text-sm text-slate-400">The agent console needs a wallet to sign the x402 authorization.</div>
       </div>

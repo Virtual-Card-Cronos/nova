@@ -5,6 +5,7 @@
 
 'use client'
 
+import { Shield, Hand, Lock, ShoppingCart } from 'lucide-react'
 import { X402Challenge } from '@/lib/types'
 
 export type PaymentBannerState =
@@ -35,7 +36,7 @@ export function PaymentBanner(props: {
           <div className="flex flex-col gap-2">
             <div className="flex gap-6 justify-between items-center">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary text-sm">shield_lock</span>
+                <Shield className="w-4 h-4 text-primary" />
                 <p className="text-white text-sm font-medium">Secure Authorization</p>
               </div>
               <p className="text-white text-xs opacity-70">Step 2 of 3</p>
@@ -80,7 +81,7 @@ export function PaymentBanner(props: {
               onClick={props.onSignAndPay}
               className="flex items-center justify-center gap-2 rounded-lg h-12 px-5 bg-primary hover:bg-primary/90 transition-colors text-white text-base font-bold shadow-lg shadow-primary/20"
             >
-              <span className="material-symbols-outlined text-lg">touch_app</span>
+              <Hand className="w-5 h-5" />
               <span>Authorize & Execute</span>
             </button>
             <button
@@ -94,7 +95,7 @@ export function PaymentBanner(props: {
 
           {/* Security Footer */}
           <div className="flex justify-center items-center gap-2 pt-2 opacity-50">
-            <span className="material-symbols-outlined text-[12px] text-white">lock</span>
+            <Lock className="w-3 h-3 text-white" />
             <span className="text-[10px] text-white uppercase tracking-widest font-bold">Encrypted via Cronos Secure Bridge</span>
           </div>
         </div>
@@ -117,7 +118,7 @@ export function PaymentBanner(props: {
   return (
     <div className="border-t border-white/10 p-4">
       <div className="flex items-center gap-3">
-        <span className="material-symbols-outlined text-primary text-lg">shopping_cart</span>
+        <ShoppingCart className="w-5 h-5 text-primary" />
         <div className="flex-1">
           <div className="text-sm font-semibold text-white">{label}</div>
           {challenge && (

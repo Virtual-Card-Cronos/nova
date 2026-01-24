@@ -5,7 +5,8 @@
 
 'use client'
 
-import { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
+import { Search, Globe, ChevronDown, Grid3x3, Star, Gamepad2, ShoppingBag, UtensilsCrossed, Plane } from 'lucide-react'
 import { useActiveAccount } from "thirdweb/react"
 import { motion } from 'framer-motion'
 import { useX402Payment } from '@/hooks/useX402Payment'
@@ -241,12 +242,12 @@ export function Storefront() {
   }
 
   const categories = [
-    { id: 'all', label: 'All', icon: 'apps' },
-    { id: 'popular', label: 'Popular', icon: 'star' },
-    { id: 'gaming', label: 'Gaming', icon: 'sports_esports' },
-    { id: 'shopping', label: 'E-commerce', icon: 'shopping_bag' },
-    { id: 'food', label: 'Food & Drink', icon: 'restaurant' },
-    { id: 'travel', label: 'Travel', icon: 'flight' },
+    { id: 'all', label: 'All', icon: Grid3x3 },
+    { id: 'popular', label: 'Popular', icon: Star },
+    { id: 'gaming', label: 'Gaming', icon: Gamepad2 },
+    { id: 'shopping', label: 'E-commerce', icon: ShoppingBag },
+    { id: 'food', label: 'Food & Drink', icon: UtensilsCrossed },
+    { id: 'travel', label: 'Travel', icon: Plane },
   ]
 
   const filtered = useMemo(() => {
@@ -292,7 +293,7 @@ export function Storefront() {
           <div className="flex-1 w-full">
             <label className="relative flex w-full">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                <span className="material-symbols-outlined">search</span>
+                <Search className="w-5 h-5" />
               </div>
               <input
                 value={query}
@@ -304,9 +305,9 @@ export function Storefront() {
             </label>
           </div>
           <button className="flex items-center gap-2 rounded-xl bg-card-dark px-6 py-4 text-white border border-white/5 hover:border-white/20 transition-all">
-            <span className="material-symbols-outlined">public</span>
+            <Globe className="w-5 h-5" />
             <span className="font-medium">United States</span>
-            <span className="material-symbols-outlined text-sm">keyboard_arrow_down</span>
+            <ChevronDown className="w-4 h-4" />
           </button>
         </div>
 
@@ -322,7 +323,7 @@ export function Storefront() {
                   : 'bg-card-dark text-slate-300 hover:text-white border border-white/5'
               }`}
             >
-              <span className="material-symbols-outlined text-lg">{cat.icon}</span>
+              {cat.icon && React.createElement(cat.icon, { className: "w-5 h-5" })}
               {cat.label}
             </button>
           ))}

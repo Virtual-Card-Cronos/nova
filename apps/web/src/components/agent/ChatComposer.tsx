@@ -5,6 +5,8 @@
 
 'use client'
 
+import { Send } from 'lucide-react'
+
 export function ChatComposer(props: {
   value: string
   onChange: (v: string) => void
@@ -29,7 +31,7 @@ export function ChatComposer(props: {
           disabled={props.disabled || !props.value.trim()}
           className="absolute right-2 top-2 bottom-2 aspect-square bg-primary/20 hover:bg-primary/30 text-primary rounded-lg flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span className="material-symbols-outlined">send</span>
+          <Send className="w-5 h-5" />
         </button>
       </div>
     </div>
