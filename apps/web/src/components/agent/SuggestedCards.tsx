@@ -14,7 +14,7 @@ type Card = {
   id: string
   title: string
   description: string
-  icon: string
+  icon: React.ComponentType<{ className?: string }>
   iconBg: string
   tag: { text: string; color: string }
   glowColor: string
@@ -135,7 +135,7 @@ export function SuggestedCards() {
                 </div>
               ) : (
                 <div className={`w-14 h-14 ${card.iconBg} rounded-xl flex items-center justify-center mb-6 shadow-xl border border-white/10`}>
-                  {React.createElement(card.icon, { className: "w-8 h-8 text-white" })}
+                  <card.icon className="w-8 h-8 text-white" />
                 </div>
               )}
               <h3 className="text-xl font-bold mb-2 text-white">{card.title}</h3>

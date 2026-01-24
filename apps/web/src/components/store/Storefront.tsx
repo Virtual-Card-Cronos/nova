@@ -323,7 +323,7 @@ export function Storefront() {
                   : 'bg-card-dark text-slate-300 hover:text-white border border-white/5'
               }`}
             >
-              {cat.icon && React.createElement(cat.icon, { className: "w-5 h-5" })}
+              {cat.icon && <cat.icon className="w-5 h-5" />}
               {cat.label}
             </button>
           ))}
