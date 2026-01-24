@@ -9,7 +9,8 @@ import { useEffect, useState } from 'react'
 import { useActiveAccount } from 'thirdweb/react'
 import { Order, GiftCard, GiftCardItem } from '@/lib/db/supabase'
 
-interface OrderWithDetails extends Order {
+interface OrderWithDetails {
+  order: Order
   items: Array<{
     id: string
     order_id: string
@@ -35,6 +36,8 @@ export function PurchaseHistory() {
     }
 
     async function fetchOrders() {
+      if (!account?.address) return
+      
       try {
         setLoading(true)
         const response = await fetch(`/api/orders?userAddress=${account.address}`)
@@ -44,14 +47,20 @@ export function PurchaseHistory() {
         }
 
         const data = await response.json()
-        if (data.success) {
+        if (data.success && data.orders) {
           // Fetch details for each order
           const ordersWithDetails = await Promise.all(
             data.orders.map(async (order: Order) => {
-              const detailsResponse = await fetch(`/api/orders?orderId=${order.id}`)
-              if (detailsResponse.ok) {
-                const detailsData = await detailsResponse.json()
-                return detailsData.order
+              try {
+                const detailsResponse = await fetch(`/api/orders?orderId=${order.id}`)
+                if (detailsResponse.ok) {
+                  const detailsData = await detailsResponse.json()
+                  if (detailsData.success && detailsData.order) {
+                    return detailsData.order
+                  }
+                }
+              } catch (err) {
+                console.error(`Error fetching details for order ${order.id}:`, err)
               }
               return { order, items: [], gift_cards: [] }
             })

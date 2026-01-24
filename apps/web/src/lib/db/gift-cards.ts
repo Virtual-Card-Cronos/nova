@@ -345,8 +345,13 @@ export async function getOrderWithDetails(orderId: string): Promise<{
   return {
     order,
     items: (orderItems || []).map((item: any) => ({
-      ...item,
-      gift_card_item: item.gift_card_item,
+      id: item.id,
+      order_id: item.order_id,
+      gift_card_item_id: item.gift_card_item_id,
+      quantity: item.quantity,
+      price_at_purchase: item.price_at_purchase,
+      created_at: item.created_at,
+      gift_card_item: item.gift_card_item as GiftCardItem,
     })),
     gift_cards: giftCards || [],
   }
